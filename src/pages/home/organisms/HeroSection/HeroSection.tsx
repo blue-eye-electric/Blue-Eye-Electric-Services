@@ -3,6 +3,7 @@ import { ArrowRight, Check, Clock3, ShieldCheck, Users } from "lucide-react";
 import { PrimaryButton } from "../../../../atoms/PrimaryButton";
 import { AccentText } from "../../../../atoms/Typography";
 import heroBg from "../../../../assets/hero-bg.png";
+import heroElectricianImg from "../../../../assets/electrician.png";
 
 type HeroSectionProps = {
   onBook: () => void;
@@ -13,7 +14,6 @@ const HeroSection = ({ onBook }: HeroSectionProps) => {
     <section
       id="hero"
       className="relative flex flex-col justify-center items-center pt-25 md:pt-25"
-      // style={{ backgroundImage: "url('src/assets/hero-bg.png')" }}
     >
       <div className="absolute inset-y-0 right-0 overflow-hidden">
         <img
@@ -246,7 +246,7 @@ const HeroSection = ({ onBook }: HeroSectionProps) => {
           "
         >
           <img
-            src="src/assets/electrician-hero.png"
+            src={heroElectricianImg}
             alt="Professional Blue Eye electrician"
             className="
               flex-1

@@ -10,7 +10,7 @@ import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminElectricianPage from "./pages/admin/AdminElectricianPage";
 import AdminElectricianDetailPage from "./pages/admin/AdminElectricianDetailPage/AdminElectricianDetailPage";
-import ProtectedRoute from "./organisms/ProtectedRoute";
+import ProtectedRoute from "./route/ProtectedRoute";
 
 function App() {
   return (

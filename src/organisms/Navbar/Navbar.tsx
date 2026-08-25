@@ -1,6 +1,14 @@
-import { MessageCircle } from "lucide-react";
+// Components
 import { SecondaryButton } from "../../atoms";
-import { Brand } from "../../molecules/Brand";
+
+// Assets
+import logo from "../../assets/logo.png";
+
+// Icons
+import { MessageCircle } from "lucide-react";
+
+// Helpers
+import { scrollToSection } from "../../helpers/scrollToSection";
 
 const Navbar = () => {
   return (
@@ -21,7 +29,12 @@ const Navbar = () => {
     "
     >
       <div className="flex w-full items-center justify-between max-w-5xl mx-auto">
-        <Brand />
+        {/* <Brand /> */}
+        <img
+          src={logo}
+          alt="Blue Eye Electrical Services"
+          className="h-[62px] w-[62px] object-contain"
+        />
 
         <div
           className="
@@ -31,20 +44,27 @@ const Navbar = () => {
         max-md:hidden
       "
         >
-          <a
-            href="#services"
+          <button
+            type="button"
             className="text-muted no-underline hover:text-ink"
+            onClick={() => scrollToSection("services")}
           >
             Services
-          </a>
-
-          <a href="#how" className="text-muted no-underline hover:text-ink">
+          </button>
+          <button
+            type="button"
+            className="text-muted no-underline hover:text-ink"
+            onClick={() => scrollToSection("how")}
+          >
             How it works
-          </a>
-
-          <a href="#trust" className="text-muted no-underline hover:text-ink">
+          </button>
+          <button
+            type="button"
+            className="text-muted no-underline hover:text-ink"
+            onClick={() => scrollToSection("#trust")}
+          >
             Why Blue Eye
-          </a>
+          </button>
         </div>
 
         <SecondaryButton
