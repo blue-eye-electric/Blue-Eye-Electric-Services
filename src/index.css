@@ -1,0 +1,92 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #173DAD;
+  --color-secondary: #ffd447;
+
+  --color-background: #ffffff;
+
+  --color-text: #102a43;
+  --color-ink: #102a43;
+  --color-muted: #58718a;
+
+  --color-border: #cbdceb;
+  --color-disabled: #cbdceb;
+
+  --color-on-primary: #f4f8fc;
+  --color-on-secondary: #102a43;
+
+  --color-success: #168c78;
+  --color-on-success: #ffffff;
+
+  --color-error: #dc3545;
+  --color-on-error: #ffffff;
+
+  --color-paper: #f4f8fc;
+  --color-muted-green: #3f6382;
+  --color-light-green: #dcebf9;
+
+  --font-sans: "DM Sans", sans-serif;
+  --font-display: "Playfair Display", serif;
+
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+
+  color: #102a43;
+
+  font-family: "DM Sans", sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* button,
+input,
+select,
+textarea {
+  font: inherit;
+} */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #087fbd;
+  outline-offset: 3px;
+}
+
+::selection {
+  background: #ffd447;
+  color: #102a43;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f4f8fc;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9bb9d2;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #58718a;
+}
