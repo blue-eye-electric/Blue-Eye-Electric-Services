@@ -1,11 +1,4 @@
-import {
-  Clock3,
-  CheckCircle2,
-  XCircle,
-  LogOut,
-  LayoutDashboard,
-  ArrowRight,
-} from "lucide-react";
+import { LogOut, LayoutDashboard, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { SecondaryButton } from "../../../atoms";
 import AdminOrdersList from "./AdminOrdersList";

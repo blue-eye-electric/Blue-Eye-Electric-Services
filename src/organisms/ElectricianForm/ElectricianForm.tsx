@@ -6,7 +6,7 @@ import {
   UserRound,
   LockKeyhole,
 } from "lucide-react";
-import { replace, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
   AppInput,

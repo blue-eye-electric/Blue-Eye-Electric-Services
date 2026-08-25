@@ -70,11 +70,6 @@ const AdminOrdersList = () => {
         electricianId: electricianId,
       });
 
-      // Update the order locally
-      const electrician = electricians.find(
-        (item) => item.id === electricianId,
-      );
-
       setOrders((current) =>
         current.map((order) =>
           order.id === selectedOrder.id
