@@ -1,10 +1,14 @@
-export const getWhatsAppUrl = (phone: string, message: string) => {
+export const getWhatsAppUrl = (phone: string, message?: string) => {
   const cleanPhone = phone.replace(/\D/g, "");
 
+  
   // Add India country code if number is 10 digits
   const whatsappPhone =
     cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
 
+    if (!message) {
+    return `https://wa.me/${whatsappPhone}`;
+  }
   return `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(message)}`;
 };
 

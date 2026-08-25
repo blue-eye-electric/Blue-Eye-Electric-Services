@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
 
 import LoginForm from "../../../organisms/LoginForm";
-import { loginAdmin, validateToken } from "../../../services/authService";
+import {
+  forgotPassword,
+  loginAdmin,
+  validateToken,
+} from "../../../services/authService";
 import { getPushSubscription } from "../../../services/pushNotificationService";
 import PageLoader from "../../../atoms/PageLoader";
 
@@ -12,6 +16,8 @@ const AdminLoginPage = () => {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
+  const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
   const [checkingToken, setCheckingToken] = useState(() =>
     Boolean(localStorage.getItem("token")),
   );
@@ -90,6 +96,31 @@ const AdminLoginPage = () => {
     }
   };
 
+  const handleForgotPassword = async (email: string) => {
+    setForgotPasswordMessage("");
+
+    if (!email) {
+      setError("Enter your email address first.");
+      return;
+    }
+
+    setForgotPasswordLoading(true);
+
+    try {
+      const result = await forgotPassword(email, "admin");
+      setForgotPasswordMessage(result.message);
+      setError("");
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Unable to send password reset email.",
+      );
+    } finally {
+      setForgotPasswordLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-dvh bg-background text-primary">
       <div className="flex min-h-dvh items-center justify-center px-5 py-10">
@@ -135,7 +166,14 @@ const AdminLoginPage = () => {
               md:p-8
             "
           >
-            <LoginForm onSubmit={handleLogin} loading={loading} error={error} />
+            <LoginForm
+              onSubmit={handleLogin}
+              onForgotPassword={handleForgotPassword}
+              loading={loading}
+              error={error}
+              forgotPasswordMessage={forgotPasswordMessage}
+              forgotPasswordLoading={forgotPasswordLoading}
+            />
           </div>
 
           {/* Footer */}

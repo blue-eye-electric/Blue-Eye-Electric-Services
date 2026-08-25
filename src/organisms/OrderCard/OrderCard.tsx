@@ -1,29 +1,34 @@
 import {
   CalendarDays,
   Clock3,
+  ExternalLink,
   MapPin,
   MessageCircle,
   Phone,
   UserRound,
 } from "lucide-react";
 
-import { PrimaryButton } from "../../../../atoms/PrimaryButton";
+import { PrimaryButton } from "../../atoms/PrimaryButton";
 
-import type { Order } from "../../../../services/orderService";
-import type { Electrician } from "../../../../services/electricianService";
-import { getGoogleMapsUrl, getWhatsAppUrl } from "./helpers";
+import type { Electrician } from "../../services/electricianService";
+import { getGoogleMapsUrl, getWhatsAppUrl } from "../../helpers/orderHelpers";
+import type { Order } from "../../types/order";
 
 type OrderCardProps = {
   order: Order;
-  electricians: Electrician[];
-  onAssign: () => void;
+  electricians?: Electrician[];
+  onAssign?: () => void;
+  onMarkComplete?: () => void;
+  role: "admin" | "electrician";
 };
 
-export default function OrderCard({
+const OrderCard = ({
   order,
-  electricians,
+  electricians = [],
   onAssign,
-}: OrderCardProps) {
+  onMarkComplete,
+  role,
+}: OrderCardProps) => {
   const assignedElectrician = electricians.find(
     (electrician) => electrician.id === order.electrician_id,
   );
@@ -78,9 +83,15 @@ export default function OrderCard({
           </p>
         </div>
 
-        <PrimaryButton onClick={onAssign}>
-          {order.electrician_id ? "Change Electrician" : "Assign Electrician"}
-        </PrimaryButton>
+        {role === "admin" && (
+          <PrimaryButton onClick={onAssign}>
+            {order.electrician_id ? "Change Electrician" : "Assign Electrician"}
+          </PrimaryButton>
+        )}
+
+        {role === "electrician" && (
+          <PrimaryButton onClick={onMarkComplete}>Mark Complete</PrimaryButton>
+        )}
       </div>
 
       {/* Details */}
@@ -154,10 +165,22 @@ export default function OrderCard({
         </div>
 
         {/* Location */}
-        <div>
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
-            Location
-          </p>
+        <div
+          className="cursor-pointer"
+          onClick={() => {
+            const url = getGoogleMapsUrl(order.latitude, order.longitude);
+
+            if (url) {
+              window.open(url, "_blank", "noopener,noreferrer");
+            }
+          }}
+        >
+          <div className="flex flex-row items-center mb-3 gap-2">
+            <p className=" text-xs font-semibold uppercase tracking-wider text-muted">
+              Location
+            </p>
+            <ExternalLink className="h-4 w-4 text-primary" />
+          </div>
 
           <p className="flex gap-2 text-sm text-ink">
             <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -166,6 +189,32 @@ export default function OrderCard({
           </p>
         </div>
       </div>
+
+      {order.photo_urls && order.photo_urls.length > 0 && (
+        <div className="mt-5 border-t border-slate-100 pt-5">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
+            Customer Photos
+          </p>
+
+          <div className="flex flex-wrap gap-3">
+            {order.photo_urls.map((photo: any, index: number) => (
+              <a
+                key={`${photo}-${index}`}
+                href={photo}
+                target="_blank"
+                rel="noreferrer"
+                className="block h-24 w-24 overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
+              >
+                <img
+                  src={photo}
+                  alt={`Customer upload ${index + 1}`}
+                  className="h-full w-full object-cover transition hover:scale-105"
+                />
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Assigned Electrician */}
       {assignedElectrician && (
@@ -193,12 +242,13 @@ export default function OrderCard({
 
           {/* WhatsApp Actions */}
           <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-            {/* Send to Customer */}
-            <a
-              href={getWhatsAppUrl(
-                // order.customer_phone,
-                "+917069806310",
-                `Hello ${order.customer_name},
+            {role === "admin" && (
+              <>
+                {/* Send to Customer */}
+                <a
+                  href={getWhatsAppUrl(
+                    order.customer_phone,
+                    `Hello ${order.customer_name},
 
 Your electrician has been assigned for your service request number *${order.id}*.
 
@@ -216,10 +266,10 @@ You can contact the electrician directly on WhatsApp for any coordination.
 
 Thank you,
 Blue Eye Electric`,
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="
           inline-flex
           flex-1
           items-center
@@ -235,16 +285,16 @@ Blue Eye Electric`,
           transition
           hover:bg-green-700
         "
-            >
-              <MessageCircle className="h-4 w-4" />
-              Send Details to Customer
-            </a>
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Send Details to Customer
+                </a>
 
-            {/* Send to Electrician */}
-            <a
-              href={getWhatsAppUrl(
-                assignedElectrician.mobile_number,
-                `Hello ${assignedElectrician.name},
+                {/* Send to Electrician */}
+                <a
+                  href={getWhatsAppUrl(
+                    assignedElectrician.mobile_number,
+                    `Hello ${assignedElectrician.name},
 
 You have been assigned a new service request.
 
@@ -268,10 +318,10 @@ Please contact the customer and coordinate the visit.
 
 Thank you,
 Blue Eye Electric`,
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="
           inline-flex
           flex-1
           items-center
@@ -288,16 +338,45 @@ Blue Eye Electric`,
           transition
           hover:bg-green-50
         "
-            >
-              <MessageCircle className="h-4 w-4" />
-              Send Details to Electrician
-            </a>
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Send Details to Electrician
+                </a>
+              </>
+            )}
+
+            {role === "electrician" && (
+              <a
+                href={getWhatsAppUrl(order.customer_phone)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+        inline-flex
+        w-full
+        items-center
+        justify-center
+        gap-2
+        rounded-xl
+        bg-green-600
+        px-4
+        py-2.5
+        text-sm
+        font-semibold
+        text-white
+        transition
+        hover:bg-green-700
+      "
+              >
+                <MessageCircle className="h-4 w-4" />
+                Chat with Customer
+              </a>
+            )}
           </div>
         </div>
       )}
     </div>
   );
-}
+};
 
 function StatusBadge({ status }: { status: string }) {
   return (
@@ -306,3 +385,5 @@ function StatusBadge({ status }: { status: string }) {
     </span>
   );
 }
+
+export default OrderCard;

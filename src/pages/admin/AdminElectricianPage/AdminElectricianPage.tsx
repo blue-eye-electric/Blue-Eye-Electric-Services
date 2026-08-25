@@ -99,7 +99,7 @@ const AdminElectricianPage = () => {
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col-reverse md:flex-row md:items-center justify-between gap-3">
-            <div className="flex flex-row gap-2 items-center justify-center">
+            <div className="flex flex-row gap-2 items-center ">
               <div
                 className="
                 flex

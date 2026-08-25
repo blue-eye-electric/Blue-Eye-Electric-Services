@@ -2,17 +2,8 @@ import { useEffect, useState } from "react";
 import { Bell, Check, LogOut, MapPin, Phone, X, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getOrders, completeOrder } from "../../../services/orderService";
-
-interface Order {
-  id: string;
-  customer_name: string;
-  customer_phone?: string;
-  service?: string;
-  address?: string;
-  description?: string;
-  status: string;
-  created_at: string;
-}
+import OrderCard from "../../../organisms/OrderCard";
+import type { Order } from "../../../types/order";
 
 const ElectricianHomePage = () => {
   const navigate = useNavigate();
@@ -45,18 +36,7 @@ const ElectricianHomePage = () => {
 
       const result = await getOrders({ status: "assigned" });
 
-      setOrders(
-        (result.orders || []).map((order) => ({
-          id: order.id,
-          customer_name: order.customer_name,
-          customer_phone: order.customer_phone,
-          service: order.service_type || undefined,
-          address: order.customer_address,
-          description: order.description || undefined,
-          status: order.status,
-          created_at: order.created_at,
-        })),
-      );
+      setOrders(result.orders);
     } catch (error) {
       console.error("Fetch orders error:", error);
 
@@ -434,111 +414,11 @@ const ElectricianHomePage = () => {
             /* Orders */
             <div className="space-y-4">
               {orders.map((order) => (
-                <div
-                  key={order.id}
-                  className="
-                    rounded-2xl
-                    border
-                    border-slate-200
-                    bg-white
-                    p-5
-                    shadow-sm
-                    md:p-6
-                  "
-                >
-                  <div
-                    className="
-                      flex
-                      flex-col
-                      gap-5
-                      md:flex-row
-                      md:items-center
-                      md:justify-between
-                    "
-                  >
-                    {/* Order Details */}
-                    <div className="min-w-0">
-                      {/* Customer */}
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h4 className="text-base font-bold text-ink">
-                          {order.customer_name}
-                        </h4>
-
-                        <span
-                          className="
-                            rounded-full
-                            bg-amber-50
-                            px-3
-                            py-1
-                            text-[11px]
-                            font-semibold
-                            capitalize
-                            text-amber-600
-                          "
-                        >
-                          {order.status}
-                        </span>
-                      </div>
-
-                      {/* Service */}
-                      {order.service && (
-                        <p className="mt-2 text-sm font-semibold text-primary">
-                          {order.service}
-                        </p>
-                      )}
-
-                      {/* Phone */}
-                      {order.customer_phone && (
-                        <div className="mt-3 flex items-center gap-2 text-sm text-muted">
-                          <Phone className="h-4 w-4 shrink-0" />
-
-                          <span>{order.customer_phone}</span>
-                        </div>
-                      )}
-
-                      {/* Address */}
-                      {order.address && (
-                        <div className="mt-2 flex items-start gap-2 text-sm text-muted">
-                          <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-
-                          <span>{order.address}</span>
-                        </div>
-                      )}
-
-                      {/* Description */}
-                      {order.description && (
-                        <p className="mt-3 text-sm leading-6 text-muted">
-                          {order.description}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Mark Complete */}
-                    <button
-                      type="button"
-                      onClick={() => setSelectedOrder(order)}
-                      className="
-                        flex
-                        shrink-0
-                        items-center
-                        justify-center
-                        gap-2
-                        rounded-xl
-                        bg-primary
-                        px-5
-                        py-3
-                        text-sm
-                        font-bold
-                        text-white
-                        transition
-                        hover:opacity-90
-                      "
-                    >
-                      <Check className="h-4 w-4" />
-                      Mark Complete
-                    </button>
-                  </div>
-                </div>
+                <OrderCard
+                  order={order}
+                  role="electrician"
+                  onMarkComplete={() => setSelectedOrder(order)}
+                />
               ))}
             </div>
           )}
@@ -637,11 +517,9 @@ const ElectricianHomePage = () => {
                 {selectedOrder.customer_name}
               </p>
 
-              {selectedOrder.service && (
-                <p className="mt-1 text-sm font-semibold text-primary">
-                  {selectedOrder.service}
-                </p>
-              )}
+              <p className="mt-1 text-sm font-semibold text-primary">
+                {selectedOrder.service_type || "Inspection Visit"}
+              </p>
 
               {selectedOrder.customer_phone && (
                 <div className="mt-3 flex items-center gap-2 text-sm text-muted">
@@ -651,11 +529,11 @@ const ElectricianHomePage = () => {
                 </div>
               )}
 
-              {selectedOrder.address && (
+              {selectedOrder.customer_address && (
                 <div className="mt-2 flex items-start gap-2 text-sm text-muted">
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
 
-                  <span>{selectedOrder.address}</span>
+                  <span>{selectedOrder.customer_address}</span>
                 </div>
               )}
             </div>

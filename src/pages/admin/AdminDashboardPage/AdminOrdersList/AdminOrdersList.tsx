@@ -1,16 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-  CalendarDays,
-  Clock3,
-  MapPin,
-  Phone,
-  UserRound,
-  Zap,
-} from "lucide-react";
+import { Zap } from "lucide-react";
 
-import { PrimaryButton } from "../../../../atoms/PrimaryButton";
-
-import { getOrders, type Order } from "../../../../services/orderService";
+import { getOrders } from "../../../../services/orderService";
 
 import {
   getElectricians,
@@ -20,7 +11,8 @@ import {
 import { assignElectrician } from "../../../../services/orderService";
 
 import AssignElectricianModal from "../AssignElectricianModal";
-import OrderCard from "./OrderCard";
+import OrderCard from "../../../../organisms/OrderCard/OrderCard";
+import type { Order } from "../../../../types/order";
 
 const AdminOrdersList = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -162,6 +154,7 @@ const AdminOrdersList = () => {
                 order={order}
                 electricians={electricians}
                 onAssign={() => setSelectedOrder(order)}
+                role="admin"
               />
             ))}
           </div>

@@ -3,8 +3,11 @@ import { Upload, FileCheck2 } from "lucide-react";
 type DocumentUploadProps = {
   label: string;
   required?: boolean;
-  file: File | null;
+  file: File | File[] | null;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  multiple?: boolean;
+  disabled?: boolean;
+  includePdf?: boolean;
 };
 
 const DocumentUpload = ({
@@ -12,6 +15,9 @@ const DocumentUpload = ({
   required,
   file,
   onChange,
+  multiple = false,
+  disabled = false,
+  includePdf = false,
 }: DocumentUploadProps) => {
   return (
     <label
@@ -75,7 +81,11 @@ const DocumentUpload = ({
             ${file ? "text-primary" : "text-muted"}
           `}
         >
-          {file ? file.name : "PDF, JPG or PNG"}
+          {Array.isArray(file)
+            ? `${file.length} file${file.length === 1 ? "" : "s"} selected`
+            : file
+              ? file.name
+              : "PDF, JPG or PNG"}
         </p>
       </div>
 
@@ -83,9 +93,12 @@ const DocumentUpload = ({
       <input
         type="file"
         accept=".pdf,.jpg,.jpeg,.png"
+        // accept={`image/jpeg,image/png,image/heic,image/heif${includePdf ? ",application/pdf" : ""}`}
         required={required}
         onChange={onChange}
         className="hidden"
+        multiple={multiple}
+        disabled={disabled}
       />
     </label>
   );

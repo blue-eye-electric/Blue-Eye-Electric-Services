@@ -6,15 +6,21 @@ import { PrimaryButton } from "../../atoms";
 
 type LoginFormProps = {
   onSubmit: (data: { email: string; password: string }) => void | Promise<void>;
+  onForgotPassword?: (email: string) => void | Promise<void>;
 
   loading?: boolean;
   error?: string;
+  forgotPasswordMessage?: string;
+  forgotPasswordLoading?: boolean;
 };
 
 const LoginForm = ({
   onSubmit,
+  onForgotPassword,
   loading = false,
   error = "",
+  forgotPasswordMessage = "",
+  forgotPasswordLoading = false,
 }: LoginFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -82,6 +88,19 @@ const LoginForm = ({
           />
         </div>
       </div>
+
+      {onForgotPassword && (
+        <div className="text-right">
+          <button
+            type="button"
+            onClick={() => onForgotPassword(email)}
+            disabled={loading || forgotPasswordLoading}
+            className="text-xs font-semibold text-primary transition hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {forgotPasswordLoading ? "Sending..." : "Forgot password?"}
+          </button>
+        </div>
+      )}
 
       {/* Password */}
       <div>
@@ -151,6 +170,12 @@ const LoginForm = ({
           "
         >
           {error}
+        </div>
+      )}
+
+      {forgotPasswordMessage && (
+        <div className="rounded-xl border border-green-100 bg-green-50 px-4 py-3 text-sm text-green-700">
+          {forgotPasswordMessage}
         </div>
       )}
 

@@ -24,6 +24,11 @@ export type ValidateTokenResponse = {
   role: UserRole | null;
 };
 
+export type ForgotPasswordResponse = {
+  success: boolean;
+  message: string;
+};
+
 const login = async (
   role: "admin" | "electrician",
   credentials: LoginCredentials,
@@ -52,6 +57,27 @@ export const loginAdmin = (
 export const loginElectrician = (
   credentials: LoginCredentials,
 ): Promise<LoginResponse> => login("electrician", credentials);
+
+export const forgotPassword = async (
+  email: string,
+  role: UserRole,
+): Promise<ForgotPasswordResponse> => {
+  const response = await fetch(`${baseUrl}/api/auth/forgot-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, role }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to send password reset email.");
+  }
+
+  return data;
+};
 
 export const validateToken = async (): Promise<ValidateTokenResponse> => {
   const token = localStorage.getItem("token");

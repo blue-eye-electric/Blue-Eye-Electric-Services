@@ -25,6 +25,7 @@ export type BookingPayload = {
   inspection: boolean;
   service: string | null;
   description: string | null;
+  photos: File[];
 };
 
 export type BookingResult = {

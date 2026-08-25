@@ -5,6 +5,8 @@ import {
   ClipboardList,
   Clock3,
   MapPin,
+  ImagePlus,
+  Trash2,
   UserRound,
   X,
   Zap,
@@ -24,6 +26,7 @@ import { serviceOptions, timeOptions } from "../../constants/services";
 import { createOrder } from "../../services/orderService";
 import LocationPicker from "../../molecules/LocationPicker";
 import { SecondaryButton } from "../../atoms";
+import DocumentUpload from "../../atoms/DocumentUpload";
 
 type BookingModalProps = {
   isOpen: boolean;
@@ -38,6 +41,13 @@ const BookingModal = ({
   inspection = false,
   onClose,
 }: BookingModalProps) => {
+  const today = new Date();
+  const minimumBookingDate = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, "0"),
+    String(today.getDate()).padStart(2, "0"),
+  ].join("-");
+
   const [form, setForm] = useState<BookingForm>(initialBookingForm);
 
   const [bookingId, setBookingId] = useState("");
@@ -45,6 +55,7 @@ const BookingModal = ({
   const [isSubmitting, setSubmitting] = useState(false);
 
   const [error, setError] = useState("");
+  const [photos, setPhotos] = useState<File[]>([]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -64,12 +75,28 @@ const BookingModal = ({
     field: K,
     value: BookingForm[K],
   ) => {
-    console.log(field, value);
-
     setForm((current) => ({
       ...current,
       [field]: value,
     }));
+  };
+
+  const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedPhotos = Array.from(event.target.files ?? []);
+    const imagePhotos = selectedPhotos.filter((photo) =>
+      photo.type.startsWith("image/"),
+    );
+
+    if (imagePhotos.length !== selectedPhotos.length) {
+      setError("Only image files can be uploaded.");
+    }
+
+    if (photos.length + imagePhotos.length > 5) {
+      setError("You can upload a maximum of 5 photos.");
+    }
+
+    setPhotos((current) => [...current, ...imagePhotos].slice(0, 5));
+    event.target.value = "";
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -92,6 +119,7 @@ const BookingModal = ({
         inspection: form.inspection === "yes",
         service: form.inspection === "yes" ? null : form.service || null,
         description: form.description.trim() || null,
+        photos,
       };
 
       const result = await createOrder(payload);
@@ -113,6 +141,7 @@ const BookingModal = ({
   const handleAnotherBooking = () => {
     setBookingId("");
     setForm(initialBookingForm);
+    setPhotos([]);
     setError("");
   };
 
@@ -399,6 +428,7 @@ const BookingModal = ({
                         label="Preferred Date"
                         required
                         type="date"
+                        min={minimumBookingDate}
                         value={form.date}
                         onChange={(event) =>
                           updateForm("date", event.target.value)
@@ -522,6 +552,50 @@ const BookingModal = ({
                           />
                         </>
                       )}
+
+                      <div className="space-y-3">
+                        <div>
+                          <DocumentUpload
+                            multiple
+                            label="Add photos"
+                            file={photos}
+                            onChange={handlePhotoChange}
+                            disabled={photos.length >= 5}
+                          />
+                          <p className="mt-1 text-xs text-muted">
+                            Optional, up to 5 images
+                          </p>
+                        </div>
+
+                        {photos.length > 0 && (
+                          <div className="space-y-2">
+                            {photos.map((photo, index) => (
+                              <div
+                                key={`${photo.name}-${photo.lastModified}-${index}`}
+                                className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2"
+                              >
+                                <span className="min-w-0 flex-1 truncate text-xs text-ink">
+                                  {photo.name}
+                                </span>
+                                <button
+                                  type="button"
+                                  aria-label={`Remove ${photo.name}`}
+                                  onClick={() =>
+                                    setPhotos((current) =>
+                                      current.filter(
+                                        (_, photoIndex) => photoIndex !== index,
+                                      ),
+                                    )
+                                  }
+                                  className="text-muted transition hover:text-orange"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </section>
 

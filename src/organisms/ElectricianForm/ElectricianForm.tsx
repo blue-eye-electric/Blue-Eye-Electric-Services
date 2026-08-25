@@ -673,6 +673,7 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
                   label="Valid ID"
                   file={validId}
                   onChange={handleValidIdChange}
+                  includePdf
                 />
 
                 {isAdmin && electrician?.valid_id_url && (

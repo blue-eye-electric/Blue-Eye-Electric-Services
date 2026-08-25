@@ -1,6 +1,4 @@
-type ReverseGeocodeResult = {
-  address: string;
-};
+import type { ReverseGeocodeResult } from "../types/location";
 
 export const reverseGeocode = async (
   latitude: number,
