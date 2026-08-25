@@ -1,6 +1,13 @@
-import type { AnchorHTMLAttributes, ReactNode } from "react";
+import type {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  ReactNode,
+} from "react";
 
-type SecondaryButtonProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
+type SecondaryButtonProps = (
+  | AnchorHTMLAttributes<HTMLAnchorElement>
+  | ButtonHTMLAttributes<HTMLButtonElement>
+) & {
   children: ReactNode;
   icon?: ReactNode;
 };
@@ -11,32 +18,41 @@ export function SecondaryButton({
   className = "",
   ...props
 }: SecondaryButtonProps) {
-  return (
-    <a
-      {...props}
-      className={`
-        inline-flex
-        items-center
-        gap-2
-        border
-        border-primary
-        rounded-xl
-        px-4
-        py-2
-        text-lg
-        font-bold
-        text-ink
-        no-underline
-        transition
-        duration-200
-        hover:-translate-y-0.5
-        cursor-pointer
-        ${className}
-      `}
-    >
-      {icon && <span aria-hidden="true">{icon}</span>}
+  const classNames = `
+    inline-flex
+    items-center
+    gap-2
+    border
+    border-primary
+    rounded-xl
+    px-4
+    py-2
+    text-lg
+    font-bold
+    text-ink
+    no-underline
+    transition
+    hover:-translate-y-0.5
+    cursor-pointer
+    ${className}
+  `;
 
+  if ("href" in props) {
+    return (
+      <a {...props} className={classNames}>
+        {icon && <span aria-hidden="true">{icon}</span>}
+
+        {children}
+      </a>
+    );
+  }
+
+  const buttonProps = props as ButtonHTMLAttributes<HTMLButtonElement>;
+
+  return (
+    <button {...buttonProps} className={classNames}>
+      {icon && <span aria-hidden="true">{icon}</span>}
       {children}
-    </a>
+    </button>
   );
 }

@@ -1,4 +1,16 @@
-import type { Electrician, GetElectriciansResponse } from "../types/electrician";
+import type {
+  CreateElectricianRequest,
+  CreateElectricianResponse,
+  Electrician,
+  GetElectriciansResponse,
+} from "../types/electrician";
+
+export type {
+  CreateElectricianRequest,
+  CreateElectricianResponse,
+  Electrician,
+  GetElectriciansResponse,
+} from "../types/electrician";
 
 export const createElectrician = async (
   data: CreateElectricianRequest,

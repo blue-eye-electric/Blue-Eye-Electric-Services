@@ -1,16 +1,32 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import HomePage from "./pages/home";
-import ElectricianLoginPage from "./pages/electrician/ElectricianLoginPage";
-import ElectricianDashboardPage from "./pages/electrician/ElectricianDashboardPage";
-import ElectricianRegistrationPage from "./pages/electrician/ElectricianRegistrationPage";
 import Footer from "./organisms/Footer";
-import AdminLoginPage from "./pages/admin/AdminLoginPage";
-import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
-import AdminElectricianPage from "./pages/admin/AdminElectricianPage";
-import AdminElectricianDetailPage from "./pages/admin/AdminElectricianDetailPage/AdminElectricianDetailPage";
 import ProtectedRoute from "./route/ProtectedRoute";
+import PageLoader from "./atoms/PageLoader";
+
+const ElectricianLoginPage = lazy(
+  () => import("./pages/electrician/ElectricianLoginPage"),
+);
+const ElectricianDashboardPage = lazy(
+  () => import("./pages/electrician/ElectricianDashboardPage"),
+);
+const ElectricianRegistrationPage = lazy(
+  () => import("./pages/electrician/ElectricianRegistrationPage"),
+);
+const AdminLoginPage = lazy(() => import("./pages/admin/AdminLoginPage"));
+const AdminDashboardPage = lazy(
+  () => import("./pages/admin/AdminDashboardPage"),
+);
+const AdminElectricianPage = lazy(
+  () => import("./pages/admin/AdminElectricianPage"),
+);
+const AdminElectricianDetailPage = lazy(
+  () =>
+    import("./pages/admin/AdminElectricianDetailPage/AdminElectricianDetailPage"),
+);
 
 function App() {
   return (
@@ -27,55 +43,60 @@ function App() {
         }}
       />
       <div className="flex min-h-dvh flex-col">
-        <Routes>
-          {/* Existing home page */}
-          <Route path="/" element={<HomePage />} />
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            {/* Existing home page */}
+            <Route path="/" element={<HomePage />} />
 
-          {/* Electrician */}
-          <Route
-            path="/electrician"
-            element={<ElectricianRegistrationPage />}
-          />
-          <Route path="/electrician/login" element={<ElectricianLoginPage />} />
-          <Route
-            path="/electrician/dashboard"
-            element={
-              <ProtectedRoute role="electrician">
-                <ElectricianDashboardPage />
-              </ProtectedRoute>
-            }
-          />
+            {/* Electrician */}
+            <Route
+              path="/electrician"
+              element={<ElectricianRegistrationPage />}
+            />
+            <Route
+              path="/electrician/login"
+              element={<ElectricianLoginPage />}
+            />
+            <Route
+              path="/electrician/dashboard"
+              element={
+                <ProtectedRoute role="electrician">
+                  <ElectricianDashboardPage />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Admin */}
-          <Route path="/admin/login" element={<AdminLoginPage />} />
-          <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute role="admin">
-                <AdminDashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/electricians"
-            element={
-              <ProtectedRoute role="admin">
-                <AdminElectricianPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/electricians/:id"
-            element={
-              <ProtectedRoute role="admin">
-                <AdminElectricianDetailPage />
-              </ProtectedRoute>
-            }
-          />
+            {/* Admin */}
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute role="admin">
+                  <AdminDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/electricians"
+              element={
+                <ProtectedRoute role="admin">
+                  <AdminElectricianPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/electricians/:id"
+              element={
+                <ProtectedRoute role="admin">
+                  <AdminElectricianDetailPage />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Unknown route */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+            {/* Unknown route */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
         <Footer />
       </div>
     </BrowserRouter>

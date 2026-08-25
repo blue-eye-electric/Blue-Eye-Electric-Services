@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 
 // Components
 import Navbar from "../../organisms/Navbar";
@@ -10,7 +10,8 @@ import GuaranteeSection from "./organisms/GuaranteeSection";
 import WhyChooseUsSection from "./organisms/WhyChooseUsSection";
 import CtaSection from "./organisms/CtaSection";
 import ElectricianSection from "./organisms/ElectricianSection/ElectricianSection";
-import BookingModal from "../../organisms/BookingModal";
+
+const BookingModal = lazy(() => import("../../organisms/BookingModal"));
 
 export default function HomePage() {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -42,12 +43,16 @@ export default function HomePage() {
 
         <CtaSection onBook={openBooking} />
       </main>
-      <BookingModal
-        isOpen={isBookingOpen}
-        onClose={closeBooking}
-        service={currentBookingService}
-        inspection={isInspectionBooking}
-      />
+      {isBookingOpen && (
+        <Suspense fallback={null}>
+          <BookingModal
+            isOpen={isBookingOpen}
+            onClose={closeBooking}
+            service={currentBookingService}
+            inspection={isInspectionBooking}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

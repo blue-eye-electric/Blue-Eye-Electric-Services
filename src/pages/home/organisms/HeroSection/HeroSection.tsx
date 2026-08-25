@@ -248,6 +248,9 @@ const HeroSection = ({ onBook }: HeroSectionProps) => {
           <img
             src={heroElectricianImg}
             alt="Professional Blue Eye electrician"
+            width={1024}
+            height={1536}
+            fetchPriority="high"
             className="
               flex-1
               md:h-full
