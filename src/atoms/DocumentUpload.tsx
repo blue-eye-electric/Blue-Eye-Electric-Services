@@ -1,3 +1,4 @@
+// Icons
 import { Upload, FileCheck2 } from "lucide-react";
 
 type DocumentUploadProps = {

@@ -2,8 +2,8 @@ import { ArrowRight, Check, Clock3, ShieldCheck, Users } from "lucide-react";
 
 import { PrimaryButton } from "../../../../atoms/PrimaryButton";
 import { AccentText } from "../../../../atoms/Typography";
-import heroBg from "../../../../assets/hero-bg.png";
-import heroElectricianImg from "../../../../assets/electrician.png";
+import heroBg from "../../../../assets/hero-bg.webp";
+import heroElectricianImg from "../../../../assets/electrician.webp";
 
 type HeroSectionProps = {
   onBook: () => void;

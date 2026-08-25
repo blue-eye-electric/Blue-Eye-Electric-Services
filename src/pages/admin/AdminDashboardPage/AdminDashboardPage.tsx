@@ -1,5 +1,9 @@
-import { LogOut, LayoutDashboard, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+// Icons
+import { LogOut, LayoutDashboard, ArrowRight } from "lucide-react";
+
+// Components
 import { SecondaryButton } from "../../../atoms";
 import AdminOrdersList from "./AdminOrdersList";
 

@@ -1,10 +1,14 @@
 import { useState } from "react";
+
+// Icons
 import { CheckCircle2, Phone, UserRound, X } from "lucide-react";
 
-import type { Electrician } from "../../../../services/electricianService";
-
+// Components
 import { PrimaryButton } from "../../../../atoms/PrimaryButton";
+
+// Interfaces
 import type { Order } from "../../../../types/order";
+import type { Electrician } from "../../../../types/electrician";
 
 type AssignElectricianModalProps = {
   isOpen: boolean;

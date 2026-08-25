@@ -1,8 +1,16 @@
 import { useEffect, useState } from "react";
-import { Bell, Check, LogOut, MapPin, Phone, X, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+// Icons
+import { Check, LogOut, MapPin, Phone, X, Zap } from "lucide-react";
+
+// Services
 import { getOrders, completeOrder } from "../../../services/orderService";
+
+// Components
 import OrderCard from "../../../organisms/OrderCard";
+
+// Interfaces
 import type { Order } from "../../../types/order";
 
 const ElectricianHomePage = () => {
@@ -134,7 +142,7 @@ const ElectricianHomePage = () => {
           {/* Header Actions */}
           <div className="flex items-center gap-2 md:gap-4">
             {/* Notifications */}
-            <button
+            {/* <button
               type="button"
               title="Notifications"
               className="
@@ -164,7 +172,7 @@ const ElectricianHomePage = () => {
                   bg-primary
                 "
               />
-            </button>
+            </button> */}
 
             {/* Electrician Name */}
             <div className="hidden text-right sm:block">

@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
+
+// Icons
 import { Zap } from "lucide-react";
 
+// Services
 import { getOrders } from "../../../../services/orderService";
-
-import {
-  getElectricians,
-  type Electrician,
-} from "../../../../services/electricianService";
-
+import { getElectricians } from "../../../../services/electricianService";
 import { assignElectrician } from "../../../../services/orderService";
 
+// Components
 import AssignElectricianModal from "../AssignElectricianModal";
 import OrderCard from "../../../../organisms/OrderCard/OrderCard";
+
+// Interfaces
 import type { Order } from "../../../../types/order";
+import type { Electrician } from "../../../../types/electrician";
 
 const AdminOrdersList = () => {
   const [orders, setOrders] = useState<Order[]>([]);

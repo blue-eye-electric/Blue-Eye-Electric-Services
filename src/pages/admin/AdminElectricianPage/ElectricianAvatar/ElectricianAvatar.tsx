@@ -1,5 +1,7 @@
-import { Wrench } from "lucide-react";
 import { useState } from "react";
+
+// Icons
+import { Wrench } from "lucide-react";
 
 const ElectricianAvatar = ({
   photoUrl,

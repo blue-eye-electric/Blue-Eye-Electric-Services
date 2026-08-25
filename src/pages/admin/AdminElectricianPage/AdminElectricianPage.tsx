@@ -1,3 +1,7 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+// Icons
 import {
   Users,
   Wrench,
@@ -6,16 +10,22 @@ import {
   XCircle,
   ArrowLeft,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+
+// Services
 import {
   getElectricians,
   updateElectrician,
-  type Electrician,
-  type ElectricianStatus,
 } from "../../../services/electricianService";
-import { useNavigate } from "react-router-dom";
+
+// Components
 import ElectricianAvatar from "./ElectricianAvatar";
 import { SecondaryButton } from "../../../atoms";
+
+// Interfaces
+import type {
+  Electrician,
+  ElectricianStatus,
+} from "../../../types/electrician";
 
 const AdminElectricianPage = () => {
   const navigate = useNavigate();

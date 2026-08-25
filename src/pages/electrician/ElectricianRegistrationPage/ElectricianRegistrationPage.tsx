@@ -1,3 +1,4 @@
+// Components
 import ElectricianForm from "../../../organisms/ElectricianForm";
 
 const ElectricianRegistrationPage = () => {

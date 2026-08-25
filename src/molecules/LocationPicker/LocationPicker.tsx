@@ -1,9 +1,17 @@
-import { MapPin } from "lucide-react";
+import { useEffect, useState } from "react";
+
+// Location
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 import L from "leaflet";
-import { useEffect, useState } from "react";
-import { PrimaryButton, SecondaryButton } from "../atoms";
-import { reverseGeocode } from "../services/locationService";
+
+// Icons
+import { MapPin } from "lucide-react";
+
+// Components
+import { PrimaryButton, SecondaryButton } from "../../atoms";
+
+// Services
+import { reverseGeocode } from "../../services/locationService";
 
 type LocationPickerProps = {
   address: string;

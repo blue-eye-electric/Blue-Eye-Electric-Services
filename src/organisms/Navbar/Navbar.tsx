@@ -2,7 +2,7 @@
 import { SecondaryButton } from "../../atoms";
 
 // Assets
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.webp";
 
 // Icons
 import { MessageCircle } from "lucide-react";

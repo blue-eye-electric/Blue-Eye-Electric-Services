@@ -1,15 +1,20 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+// Icons
 import { ShieldCheck } from "lucide-react";
 
+// Components
 import LoginForm from "../../../organisms/LoginForm";
+import PageLoader from "../../../atoms/PageLoader";
+
+// Services
 import {
   forgotPassword,
   loginAdmin,
   validateToken,
 } from "../../../services/authService";
 import { getPushSubscription } from "../../../services/pushNotificationService";
-import PageLoader from "../../../atoms/PageLoader";
 
 const AdminLoginPage = () => {
   const navigate = useNavigate();

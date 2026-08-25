@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+// Components
 import Navbar from "../../organisms/Navbar";
 import HeroSection from "./organisms/HeroSection";
 import ServiceSection from "./organisms/ServiceSection";

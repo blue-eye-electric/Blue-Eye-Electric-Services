@@ -23,8 +23,6 @@ import {
   createElectrician,
   getElectricianById,
   updateElectrician,
-  type CreateElectricianRequest,
-  type Electrician,
 } from "../../services/electricianService";
 
 import { ID_TYPES } from "../../constants/idTypeConstants";
@@ -35,6 +33,10 @@ import {
   allowedDocTypes,
   allowedImageTypes,
 } from "../../constants/allowedDocTypes";
+import type {
+  CreateElectricianRequest,
+  Electrician,
+} from "../../types/electrician";
 
 type ElectricianFormMode = "register" | "admin";
 
