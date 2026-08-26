@@ -1,8 +1,8 @@
 self.addEventListener('push', (event) => {
-  console.log('[Push SW] Push event received');
+  // console.log('[Push SW] Push event received');
 
   if (!event.data) {
-    console.log('[Push SW] No data');
+    // console.log('[Push SW] No data');
     return;
   }
 
@@ -11,9 +11,9 @@ self.addEventListener('push', (event) => {
   try {
     data = event.data.json();
   } catch (error) {
-    console.log(
-      '[Push SW] Received plain text push',
-    );
+    // console.log(
+    //   '[Push SW] Received plain text push',
+    // );
 
     data = {
       title: 'New Notification',
@@ -22,7 +22,7 @@ self.addEventListener('push', (event) => {
     };
   }
 
-  console.log('[Push SW] Push data:', data);
+  // console.log('[Push SW] Push data:', data);
 
   const title =
     data.title || 'New Notification';
@@ -40,15 +40,15 @@ self.addEventListener('push', (event) => {
     self.registration
       .showNotification(title, options)
       .then(() => {
-        console.log(
-          '[Push SW] Notification displayed',
-        );
+        // console.log(
+        //   '[Push SW] Notification displayed',
+        // );
       })
       .catch((error) => {
-        console.error(
-          '[Push SW] showNotification failed:',
-          error,
-        );
+        // console.error(
+        //   '[Push SW] showNotification failed:',
+        //   error,
+        // );
       }),
   );
 });
@@ -56,9 +56,9 @@ self.addEventListener('push', (event) => {
 self.addEventListener(
   'notificationclick',
   (event) => {
-    console.log(
-      '[Push SW] Notification clicked',
-    );
+    // console.log(
+    //   '[Push SW] Notification clicked',
+    // );
 
     event.notification.close();
 

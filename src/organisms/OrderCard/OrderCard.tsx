@@ -83,13 +83,13 @@ const OrderCard = ({
           </p>
         </div>
 
-        {role === "admin" && (
+        {order.status !== "completed" && role === "admin" && (
           <PrimaryButton onClick={onAssign}>
             {order.electrician_id ? "Change Electrician" : "Assign Electrician"}
           </PrimaryButton>
         )}
 
-        {role === "electrician" && (
+        {order.status !== "completed" && role === "electrician" && (
           <PrimaryButton onClick={onMarkComplete}>Mark Complete</PrimaryButton>
         )}
       </div>
@@ -248,7 +248,9 @@ const OrderCard = ({
                 <a
                   href={getWhatsAppUrl(
                     order.customer_phone,
-                    `Hello ${order.customer_name},
+                    order.status === "completed"
+                      ? ""
+                      : `Hello ${order.customer_name},
 
 Your electrician has been assigned for your service request number *${order.id}*.
 
@@ -276,7 +278,7 @@ Blue Eye Electric`,
           justify-center
           gap-2
           rounded-xl
-          bg-green-600
+          bg-success
           px-4
           py-2.5
           text-sm
@@ -287,14 +289,18 @@ Blue Eye Electric`,
         "
                 >
                   <MessageCircle className="h-4 w-4" />
-                  Send Details to Customer
+                  {order.status === "completed"
+                    ? "Chat with customer"
+                    : "Send Details to Customer"}
                 </a>
 
                 {/* Send to Electrician */}
                 <a
                   href={getWhatsAppUrl(
                     assignedElectrician.mobile_number,
-                    `Hello ${assignedElectrician.name},
+                    order.status === "completed"
+                      ? ""
+                      : `Hello ${assignedElectrician.name},
 
 You have been assigned a new service request.
 
@@ -340,7 +346,9 @@ Blue Eye Electric`,
         "
                 >
                   <MessageCircle className="h-4 w-4" />
-                  Send Details to Electrician
+                  {order.status === "completed"
+                    ? "Chat with Electrician"
+                    : "Send Details to Electrician"}
                 </a>
               </>
             )}

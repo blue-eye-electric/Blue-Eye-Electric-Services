@@ -27,3 +27,32 @@ export const reverseGeocode = async (
     address: data.features?.[0]?.properties?.label ?? "",
   };
 };
+
+export type PlaceSearchResult = {
+  display_name: string;
+  lat: string;
+  lon: string;
+};
+
+export const searchPlaces = async (
+  query: string,
+): Promise<PlaceSearchResult[]> => {
+  if (!query.trim()) return [];
+
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&q=${encodeURIComponent(
+      query,
+    )}`,
+    {
+      headers: {
+        Accept: "application/json",
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to search location");
+  }
+
+  return response.json();
+};

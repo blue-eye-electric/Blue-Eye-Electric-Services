@@ -44,3 +44,4 @@ export interface GetElectriciansResponse {
   success: boolean;
   electricians: Electrician[];
 }
+

@@ -5,33 +5,21 @@ import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 
 // Icons
-import { MapPin } from "lucide-react";
+import { Loader2, MapPin, Search, X } from "lucide-react";
 
 // Components
 import { PrimaryButton, SecondaryButton } from "../../atoms";
 
 // Services
-import { reverseGeocode } from "../../services/locationService";
+import { reverseGeocode, searchPlaces } from "../../services/locationService";
 
-type LocationPickerProps = {
-  address: string;
-  latitude: string;
-  longitude: string;
-  onChange: (location: {
-    address: string;
-    latitude: string;
-    longitude: string;
-  }) => void;
-};
-
-type Position = {
-  lat: number;
-  lng: number;
-};
+// Interfaces
+import type { LocationPickerProps, Position } from "../../types/location";
+import MapController from "./MapController";
 
 const defaultCenter: Position = {
-  lat: 25.5941,
-  lng: 85.1376,
+  latitude: 25.5941,
+  longitude: 85.1376,
 };
 
 const markerIcon = L.icon({
@@ -56,8 +44,8 @@ const MapClickHandler = ({ onLocationChange }: MapClickHandlerProps) => {
   useMapEvents({
     click(event) {
       onLocationChange({
-        lat: event.latlng.lat,
-        lng: event.latlng.lng,
+        latitude: event.latlng.lat,
+        longitude: event.latlng.lng,
       });
     },
   });
@@ -74,39 +62,175 @@ const LocationPicker = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const [position, setPosition] = useState<Position>({
-    lat: latitude ? Number(latitude) : defaultCenter.lat,
-    lng: longitude ? Number(longitude) : defaultCenter.lng,
+    latitude: latitude ? Number(latitude) : defaultCenter.latitude,
+    longitude: longitude ? Number(longitude) : defaultCenter.longitude,
   });
 
   const [isLoadingAddress, setIsLoadingAddress] = useState(false);
+
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<
+    {
+      address: string;
+      latitude: number;
+      longitude: number;
+    }[]
+  >([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // If form already has a location, don't overwrite it
+    if (latitude && longitude) return;
+
+    if (!navigator.geolocation) {
+      console.warn("Geolocation is not supported by this browser.");
+      return;
+    }
+
+    setIsGettingLocation(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (location) => {
+        const newPosition: Position = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        };
+
+        // Move marker
+        setPosition(newPosition);
+
+        // Get address and update form.mapAddress
+        await getAddressFromCoordinates(
+          newPosition.latitude,
+          newPosition.longitude,
+        );
+
+        setIsGettingLocation(false);
+      },
+      (error) => {
+        console.error("Unable to get current location:", error);
+        setIsGettingLocation(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
+    );
+  }, [isOpen]);
 
   useEffect(() => {
     if (!latitude || !longitude) return;
 
     setPosition({
-      lat: Number(latitude),
-      lng: Number(longitude),
+      latitude: Number(latitude),
+      longitude: Number(longitude),
     });
   }, [latitude, longitude]);
 
-  const getAddressFromCoordinates = async (lat: number, lng: number) => {
+  useEffect(() => {
+    const query = searchQuery.trim();
+
+    if (query.length < 3) {
+      setSearchResults([]);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      handleSearch(query);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const handleCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      console.error("Geolocation is not supported by this browser.");
+      return;
+    }
+
+    setIsGettingLocation(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (location) => {
+        const newPosition: Position = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        };
+
+        setPosition(newPosition);
+
+        await getAddressFromCoordinates(
+          newPosition.latitude,
+          newPosition.longitude,
+        );
+
+        setIsGettingLocation(false);
+      },
+      (error) => {
+        console.error("Unable to get current location:", error);
+        setIsGettingLocation(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
+    );
+  };
+
+  const handleSearch = async (query: string) => {
+    if (!query.trim()) return;
+
+    try {
+      setIsSearching(true);
+
+      const results = await searchPlaces(query);
+
+      setSearchResults(
+        results.map((item) => ({
+          address: item.display_name,
+          latitude: Number(item.lat),
+          longitude: Number(item.lon),
+        })),
+      );
+    } catch (error) {
+      console.error("Search failed:", error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const getAddressFromCoordinates = async (
+    latitude: number,
+    longitude: number,
+  ) => {
     try {
       setIsLoadingAddress(true);
 
-      const { address: formattedAddress } = await reverseGeocode(lat, lng);
+      const { address: formattedAddress } = await reverseGeocode(
+        latitude,
+        longitude,
+      );
 
       onChange({
         address: formattedAddress,
-        latitude: String(lat),
-        longitude: String(lng),
+        latitude: String(latitude),
+        longitude: String(longitude),
       });
     } catch (error) {
-      console.error("OpenRouteService reverse geocoding failed:", error);
+      console.error("Reverse geocoding failed:", error);
 
       onChange({
         address: "",
-        latitude: String(lat),
-        longitude: String(lng),
+        latitude: String(latitude),
+        longitude: String(longitude),
       });
     } finally {
       setIsLoadingAddress(false);
@@ -116,17 +240,19 @@ const LocationPicker = ({
   const handleLocationChange = async (newPosition: Position) => {
     setPosition(newPosition);
 
-    await getAddressFromCoordinates(newPosition.lat, newPosition.lng);
+    await getAddressFromCoordinates(
+      newPosition.latitude,
+      newPosition.longitude,
+    );
   };
 
   const handleMarkerDrag = async (event: L.DragEndEvent) => {
     const marker = event.target as L.Marker;
-
     const newPosition = marker.getLatLng();
 
     await handleLocationChange({
-      lat: newPosition.lat,
-      lng: newPosition.lng,
+      latitude: newPosition.lat,
+      longitude: newPosition.lng,
     });
   };
 
@@ -226,20 +352,149 @@ const LocationPicker = ({
             "
           >
             {/* Header */}
-            <div className="border-b border-slate-200 px-5 py-4">
-              <h3 className="text-base font-bold text-ink">
-                Select Home Location
-              </h3>
+            <div className="w-full flex justify-between border-b border-slate-200 px-5 py-4">
+              <div>
+                <h3 className="text-base font-bold text-ink">
+                  Select Your Location
+                </h3>
 
-              <p className="mt-1 text-xs text-muted">
-                Click on the map or drag the marker to your home location.
-              </p>
+                <p className="mt-1 text-xs text-muted">
+                  Click on the map or drag the marker to your location.
+                </p>
+              </div>
+              <SecondaryButton onClick={() => setIsOpen(false)}>
+                <X className="h-5 w-5" />
+              </SecondaryButton>{" "}
             </div>
 
+            {/* Location Search */}
+            <div className="relative border-b border-slate-200 bg-white p-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                  }}
+                  onFocus={() => {
+                    setIsSearchFocused(true);
+                  }}
+                  onBlur={() => {
+                    setTimeout(() => {
+                      setIsSearchFocused(false);
+                    }, 150);
+                  }}
+                  placeholder="Search your area, society, street..."
+                  className="
+      w-full
+      rounded-xl
+      border
+      border-slate-200
+      bg-slate-50
+      py-3
+      pl-10
+      pr-10
+      text-sm
+      text-ink
+      outline-none
+      transition
+      focus:border-primary
+      focus:bg-white
+    "
+                />
+
+                {isSearching && (
+                  <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted" />
+                )}
+              </div>
+
+              {/* Search Results */}
+              {isSearchFocused && searchResults.length > 0 && (
+                <div
+                  className="
+        absolute
+        left-4
+        right-4
+        z-[2000]
+        overflow-hidden
+        rounded-xl
+        border
+        border-slate-200
+        bg-white
+        shadow-lg
+      "
+                >
+                  {searchResults.map((result, index) => (
+                    <button
+                      key={`${result.latitude}-${result.longitude}-${index}`}
+                      type="button"
+                      onClick={() => {
+                        const newPosition: Position = {
+                          latitude: result.latitude,
+                          longitude: result.longitude,
+                        };
+
+                        setPosition(newPosition);
+
+                        onChange({
+                          address: result.address,
+                          latitude: String(result.latitude),
+                          longitude: String(result.longitude),
+                        });
+
+                        setSearchQuery(result.address);
+                        setSearchResults([]);
+                      }}
+                      className="
+            flex
+            w-full
+            items-start
+            gap-3
+            border-b
+            border-slate-100
+            px-4
+            py-3
+            text-left
+            last:border-b-0
+            hover:bg-slate-50
+          "
+                    >
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+
+                      <span className="text-xs leading-5 text-ink">
+                        {result.address}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="p-4">
+              <SecondaryButton
+                type="button"
+                onClick={handleCurrentLocation}
+                disabled={isGettingLocation}
+              >
+                {isGettingLocation ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Finding location...
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="h-4 w-4" />
+                    Use Current Location
+                  </>
+                )}
+              </SecondaryButton>
+            </div>
             {/* Map */}
             <div className="h-[400px] w-full">
               <MapContainer
-                center={[position.lat, position.lng]}
+                center={[position.latitude, position.longitude]}
                 zoom={15}
                 scrollWheelZoom
                 className="h-full w-full"
@@ -249,10 +504,12 @@ const LocationPicker = ({
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
+                <MapController position={position} />
+
                 <MapClickHandler onLocationChange={handleLocationChange} />
 
                 <Marker
-                  position={[position.lat, position.lng]}
+                  position={[position.latitude, position.longitude]}
                   icon={markerIcon}
                   draggable
                   eventHandlers={{
@@ -290,7 +547,7 @@ const LocationPicker = ({
             </div>
 
             {/* Actions */}
-            <div
+            {/* <div
               className="
                 flex
                 justify-end
@@ -311,7 +568,7 @@ const LocationPicker = ({
               >
                 Confirm Location
               </PrimaryButton>
-            </div>
+            </div> */}
           </div>
         </div>
       )}

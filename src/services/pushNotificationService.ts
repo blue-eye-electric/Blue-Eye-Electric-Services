@@ -76,9 +76,9 @@ export const registerPushNotification = async (
       !('PushManager' in window) ||
       !('Notification' in window)
     ) {
-      console.log(
-        'Push notifications are not supported',
-      );
+      // console.log(
+      //   'Push notifications are not supported',
+      // );
 
       return false;
     }
@@ -88,9 +88,9 @@ export const registerPushNotification = async (
       await Notification.requestPermission();
 
     if (permission !== 'granted') {
-      console.log(
-        'Notification permission denied',
-      );
+      // console.log(
+      //   'Notification permission denied',
+      // );
 
       return false;
     }
@@ -101,10 +101,10 @@ export const registerPushNotification = async (
         '/push-sw.js',
       );
 
-    console.log(
-      'Push service worker registered',
-      registration,
-    );
+    // console.log(
+    //   'Push service worker registered',
+    //   registration,
+    // );
 
     // Get VAPID public key
     const keyResponse = await fetch(
@@ -178,9 +178,9 @@ export const registerPushNotification = async (
       );
     }
 
-    console.log(
-      'Push subscription saved',
-    );
+    // console.log(
+    //   'Push subscription saved',
+    // );
 
     return true;
   } catch (error) {

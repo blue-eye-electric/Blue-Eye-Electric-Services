@@ -1,3 +1,4 @@
+import { baseUrl } from "../constants/apiConstants";
 import type {
   CreateElectricianRequest,
   CreateElectricianResponse,
@@ -34,7 +35,7 @@ export const createElectrician = async (
   formData.append('validId', data.validId);
 
   const response = await fetch(
-    'http://localhost:4000/api/electricians',
+    `${baseUrl}/api/electricians`,
     {
       method: 'POST',
       body: formData,
@@ -58,7 +59,7 @@ export const getElectricians = async (
   withDocument?: boolean
 ): Promise<Electrician[]> => {
   const url = new URL(
-    'http://localhost:4000/api/electricians',
+    `${baseUrl}/api/electricians`,
   );
 
   if (status) {
@@ -209,7 +210,7 @@ export const updateElectrician = async (
   }
 
   const response = await fetch(
-    `http://localhost:4000/api/electricians/${id}`,
+    `${baseUrl}/api/electricians/${id}`,
     {
       method: "PATCH",
       headers: {

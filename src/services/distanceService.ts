@@ -1,59 +1,40 @@
-type Coordinates = {
-  latitude: number;
-  longitude: number;
-};
+import { baseUrl } from "../constants/apiConstants";
+import type { FindDistanceResponse } from "../types/distance";
 
-type DrivingDistanceResult = {
-  distanceKm: number;
-  durationMinutes: number;
-};
 
-const ORS_API_URL =
-  "https://api.openrouteservice.org/v2/directions/driving-car";
+export const findDistanceOfAllElectricians = async (
+  orderId: string,
+): Promise<FindDistanceResponse> => {
+  const token = localStorage.getItem("token");
 
-const ORS_API_KEY =
-  import.meta.env.VITE_ORS_API_KEY;
-
-export async function getDrivingDistance(
-  from: Coordinates,
-  to: Coordinates,
-): Promise<DrivingDistanceResult> {
-  if (!ORS_API_KEY) {
-    throw new Error(
-      "OpenRouteService API key is not configured.",
-    );
+  if (!token) {
+    throw new Error("Authentication token not found");
   }
 
-  const response = await fetch(
-    `${ORS_API_URL}?api_key=${encodeURIComponent(
-      ORS_API_KEY,
-    )}&start=${from.longitude},${from.latitude}&end=${to.longitude},${to.latitude}`,
+  const url = new URL(
+    `${baseUrl}/api/admin/findDistance`,
   );
+
+  url.searchParams.append("orderId", orderId);
+
+  const response = await fetch(url.toString(), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const result: FindDistanceResponse & {
+    message?: string;
+  } = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      `Distance API failed with status ${response.status}.`,
+      result.message ||
+        "Failed to calculate electrician distances",
     );
   }
 
-  const data = await response.json();
-
-  const summary =
-    data?.features?.[0]?.properties?.summary;
-
-  if (!summary) {
-    throw new Error(
-      "Driving distance could not be calculated.",
-    );
-  }
-
-  return {
-    distanceKm: Number(
-      (summary.distance / 1000).toFixed(2),
-    ),
-
-    durationMinutes: Math.ceil(
-      summary.duration / 60,
-    ),
-  };
-}
+  return result;
+};

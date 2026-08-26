@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Icons
-import { CheckCircle2, Phone, UserRound, X } from "lucide-react";
+import { CheckCircle2, Clock, MapPin, Phone, UserRound, X } from "lucide-react";
 
 // Components
 import { PrimaryButton } from "../../../../atoms/PrimaryButton";
@@ -9,6 +9,7 @@ import { PrimaryButton } from "../../../../atoms/PrimaryButton";
 // Interfaces
 import type { Order } from "../../../../types/order";
 import type { Electrician } from "../../../../types/electrician";
+import { findDistanceOfAllElectricians } from "../../../../services/distanceService";
 
 type AssignElectricianModalProps = {
   isOpen: boolean;
@@ -27,9 +28,43 @@ export default function AssignElectricianModal({
   onClose,
   onAssign,
 }: AssignElectricianModalProps) {
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState(order.electrician_id || "");
-
+  const [electricianTravelMap, setElectricianTravelMap] = useState<
+    Record<string, [number, number | null]>
+  >({});
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetchElectriciansDistance();
+  }, [order.id]);
+
+  const fetchElectriciansDistance = async () => {
+    try {
+      setIsLoading(true);
+
+      const result = await findDistanceOfAllElectricians(order.id);
+
+      if (result.electricians) {
+        const electricianMap = result.electricians.reduce<
+          Record<string, [number, number | null]>
+        >((acc, electrician) => {
+          acc[electrician.id] = [
+            electrician.distanceKm,
+            electrician.durationMinutes,
+          ];
+
+          return acc;
+        }, {});
+
+        setElectricianTravelMap(electricianMap);
+      }
+    } catch (error) {
+      console.error("Failed to fetch electrician distances:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (!isOpen) {
     return null;
@@ -54,6 +89,8 @@ export default function AssignElectricianModal({
       );
     }
   };
+
+  if (isLoading) return <h1>Loading...</h1>;
 
   return (
     <div
@@ -151,7 +188,9 @@ export default function AssignElectricianModal({
             ) : (
               electricians.map((electrician) => {
                 const selected = selectedId === electrician.id;
-
+                const [distance, duration] = electricianTravelMap[
+                  electrician.id
+                ] ?? [undefined, undefined];
                 return (
                   <button
                     key={electrician.id}
@@ -211,6 +250,18 @@ export default function AssignElectricianModal({
                         <Phone className="h-3 w-3" />
                         {electrician.mobile_number}
                       </p>
+                      {distance && (
+                        <p className="mt-1 flex items-center gap-1 text-xs text-muted">
+                          <MapPin className="h-3 w-3" />
+                          Distance : {distance} Kms
+                        </p>
+                      )}
+                      {duration && (
+                        <p className="mt-1 flex items-center gap-1 text-xs text-muted">
+                          <Clock className="h-3 w-3" />
+                          Duration : {duration} min
+                        </p>
+                      )}
                     </div>
 
                     {selected && (
