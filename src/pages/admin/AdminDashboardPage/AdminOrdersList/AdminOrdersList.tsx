@@ -15,6 +15,7 @@ import OrderCard from "../../../../organisms/OrderCard/OrderCard";
 // Interfaces
 import type { Order } from "../../../../types/order";
 import type { Electrician } from "../../../../types/electrician";
+import { SecondaryButton } from "../../../../atoms";
 
 const AdminOrdersList = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -22,6 +23,17 @@ const AdminOrdersList = () => {
   const [electricians, setElectricians] = useState<Electrician[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
+
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const [oldestLoadedMonth, setOldestLoadedMonth] = useState(() => {
+    const currentDate = new Date();
+
+    return {
+      month: currentDate.getMonth() + 1,
+      year: currentDate.getFullYear(),
+    };
+  });
 
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
@@ -43,6 +55,34 @@ const AdminOrdersList = () => {
       );
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadPreviousMonth = async () => {
+    const previousMonth =
+      oldestLoadedMonth.month === 1 ? 12 : oldestLoadedMonth.month - 1;
+    const previousYear =
+      oldestLoadedMonth.month === 1
+        ? oldestLoadedMonth.year - 1
+        : oldestLoadedMonth.year;
+
+    try {
+      setIsLoadingMore(true);
+      setError("");
+
+      const result = await getOrders({
+        month: previousMonth,
+        year: previousYear,
+      });
+
+      setOrders((currentOrders) => [...currentOrders, ...result.orders]);
+      setOldestLoadedMonth({ month: previousMonth, year: previousYear });
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to fetch orders",
+      );
+    } finally {
+      setIsLoadingMore(false);
     }
   };
 
@@ -156,6 +196,12 @@ const AdminOrdersList = () => {
             ))}
           </div>
         )}
+
+        <div className="flex justify-center py-8">
+          <SecondaryButton onClick={loadPreviousMonth} disabled={isLoadingMore}>
+            {isLoadingMore ? "Loading orders..." : "Load more"}
+          </SecondaryButton>
+        </div>
       </div>
 
       {/* Assign Modal */}

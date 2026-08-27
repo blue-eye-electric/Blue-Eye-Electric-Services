@@ -1,6 +1,11 @@
 import { baseUrl } from "../constants/apiConstants";
 import type { BookingPayload } from "../types/booking";
-import type { CreateOrderResponse, GetOrdersParams, GetOrdersResponse } from "../types/order";
+import type {
+  CompleteOrderPayload,
+  CreateOrderResponse,
+  GetOrdersParams,
+  GetOrdersResponse,
+} from "../types/order";
 
 export const createOrder = async (
   data: BookingPayload,
@@ -57,6 +62,11 @@ export const getOrders = async (
 
   if (params?.status) {
     searchParams.append("status", params.status);
+  }
+
+  if (params?.month !== undefined && params?.year !== undefined) {
+    searchParams.append("month", String(params.month));
+    searchParams.append("year", String(params.year));
   }
 
   const queryString = searchParams.toString();
@@ -134,7 +144,10 @@ export const assignElectrician = async ({
   }
 };
 
-export const completeOrder = async (orderId: string): Promise<void> => {
+export const completeOrder = async (
+  orderId: string,
+  payment: CompleteOrderPayload,
+): Promise<void> => {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -146,6 +159,7 @@ export const completeOrder = async (orderId: string): Promise<void> => {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
+    body: JSON.stringify(payment),
   });
 
   const result = await response.json();

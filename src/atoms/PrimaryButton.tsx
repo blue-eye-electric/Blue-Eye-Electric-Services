@@ -38,7 +38,7 @@ export function PrimaryButton({
         hover:bg-primary/80
         hover:border-primary
         disabled:cursor-wait
-        disabled:opacity-65
+        disabled:bg-slate-500
         ${fullWidth ? "w-full" : ""}
         ${className}
       `}

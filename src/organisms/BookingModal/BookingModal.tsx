@@ -1,4 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
+
+// Icons
 import {
   CalendarDays,
   CheckCircle2,
@@ -11,21 +13,27 @@ import {
   Zap,
 } from "lucide-react";
 
+// Components
 import { Eyebrow } from "../../atoms/Eyebrow";
 import { AccentText } from "../../atoms/Typography";
 import { AppInput } from "../../atoms/AppInput";
 import { AppSelect } from "../../atoms/AppSelect";
 import { AppTextarea } from "../../atoms/AppTextarea";
 import { PrimaryButton } from "../../atoms/PrimaryButton";
-
-import { initialBookingForm, type BookingForm } from "../../types/booking";
-
-import { serviceOptions, timeOptions } from "../../constants/services";
-
-import { createOrder } from "../../services/orderService";
 import LocationPicker from "../../molecules/LocationPicker";
 import { SecondaryButton } from "../../atoms";
 import DocumentUpload from "../../atoms/DocumentUpload";
+import SummaryRow from "./SummaryRow";
+import SectionHeader from "./SectionHeader";
+
+// Interfaces
+import { initialBookingForm, type BookingForm } from "../../types/booking";
+
+// Constants
+import { serviceOptions, timeOptions } from "../../constants/services";
+
+// Services
+import { createOrder } from "../../services/orderService";
 
 type BookingModalProps = {
   isOpen: boolean;
@@ -700,72 +708,3 @@ const BookingModal = ({
 };
 
 export default BookingModal;
-
-/* =========================================================
-   Section Header
-========================================================= */
-
-type SectionHeaderProps = {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-};
-
-function SectionHeader({ icon, title, description }: SectionHeaderProps) {
-  return (
-    <div className="mb-5 flex items-center gap-3">
-      <div
-        className="
-          flex
-          h-9
-          w-9
-          shrink-0
-          items-center
-          justify-center
-          rounded-xl
-          bg-primary/10
-          text-primary
-        "
-      >
-        {icon}
-      </div>
-
-      <div>
-        <h3 className="text-sm font-bold text-ink">{title}</h3>
-
-        <p className="mt-0.5 text-xs text-slate-500">{description}</p>
-      </div>
-    </div>
-  );
-}
-
-/* =========================================================
-   Summary Row
-========================================================= */
-
-type SummaryRowProps = {
-  label: string;
-  value: string;
-  last?: boolean;
-};
-
-function SummaryRow({ label, value, last = false }: SummaryRowProps) {
-  return (
-    <div
-      className={`
-        flex
-        items-center
-        justify-between
-        gap-4
-        py-3
-        ${!last ? "border-b border-slate-100" : ""}
-      `}
-    >
-      <span className="text-xs text-muted">{label}</span>
-
-      <span className="max-w-[60%] text-right text-xs font-semibold text-ink">
-        {value}
-      </span>
-    </div>
-  );
-}

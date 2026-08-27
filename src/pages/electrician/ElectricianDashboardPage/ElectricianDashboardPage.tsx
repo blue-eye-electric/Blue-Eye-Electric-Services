@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Icons
-import { Check, LogOut, MapPin, Phone, X, Zap } from "lucide-react";
+import { Check, LogOut, Zap } from "lucide-react";
 
 // Services
-import { getOrders, completeOrder } from "../../../services/orderService";
+import { getOrders } from "../../../services/orderService";
 
 // Components
 import OrderCard from "../../../organisms/OrderCard";
+import CompleteJobModal from "./CompleteJobModal";
 
 // Interfaces
 import type { Order } from "../../../types/order";
@@ -24,8 +25,6 @@ const ElectricianHomePage = () => {
 
   // Selected order for complete confirmation
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-
-  const [completeLoading, setCompleteLoading] = useState(false);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -62,37 +61,6 @@ const ElectricianHomePage = () => {
     fetchOrders();
   }, []);
 
-  // ==============================
-  // Mark order as completed
-  // ==============================
-
-  const handleMarkComplete = async () => {
-    if (!selectedOrder) return;
-
-    try {
-      setCompleteLoading(true);
-
-      await completeOrder(selectedOrder.id);
-
-      // Remove completed order from the list
-      setOrders((prev) =>
-        prev.filter((order) => order.id !== selectedOrder.id),
-      );
-
-      // Close confirmation modal
-      setSelectedOrder(null);
-    } catch (error) {
-      console.error("Mark complete error:", error);
-
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Failed to mark job as completed",
-      );
-    } finally {
-      setCompleteLoading(false);
-    }
-  };
   return (
     <div className="min-h-dvh bg-background text-primary">
       {/* =========================================
@@ -423,6 +391,7 @@ const ElectricianHomePage = () => {
             <div className="space-y-4">
               {orders.map((order) => (
                 <OrderCard
+                  key={order.id}
                   order={order}
                   role="electrician"
                   onMarkComplete={() => setSelectedOrder(order)}
@@ -436,175 +405,17 @@ const ElectricianHomePage = () => {
       {/* =========================================
           Complete Confirmation Modal
       ========================================= */}
-      {selectedOrder && (
-        <div
-          className="
-            fixed
-            inset-0
-            z-50
-            flex
-            items-center
-            justify-center
-            bg-black/40
-            px-5
-            backdrop-blur-sm
-          "
-        >
-          <div
-            className="
-              w-full
-              max-w-md
-              rounded-3xl
-              bg-white
-              p-6
-              shadow-2xl
-              md:p-8
-            "
-          >
-            {/* Modal Header */}
-            <div className="flex items-start justify-between">
-              <div>
-                <div
-                  className="
-                    flex
-                    h-11
-                    w-11
-                    items-center
-                    justify-center
-                    rounded-xl
-                    bg-primary/10
-                    text-primary
-                  "
-                >
-                  <Check className="h-5 w-5" />
-                </div>
+      <CompleteJobModal
+        order={selectedOrder}
+        onClose={() => setSelectedOrder(null)}
+        onCompleted={() => {
+          setOrders((prev) =>
+            prev.filter((order) => order.id !== selectedOrder?.id),
+          );
 
-                <h3 className="mt-4 text-lg font-bold text-ink">
-                  Complete Job?
-                </h3>
-
-                <p className="mt-1 text-sm leading-6 text-muted">
-                  Are you sure you want to mark this job as completed?
-                </p>
-              </div>
-
-              {/* Close */}
-              <button
-                type="button"
-                onClick={() => setSelectedOrder(null)}
-                disabled={completeLoading}
-                className="
-                  flex
-                  h-9
-                  w-9
-                  items-center
-                  justify-center
-                  rounded-lg
-                  text-muted
-                  transition
-                  hover:bg-slate-100
-                  disabled:opacity-50
-                "
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            {/* Selected Order */}
-            <div
-              className="
-                mt-6
-                rounded-2xl
-                border
-                border-slate-200
-                bg-slate-50
-                p-4
-              "
-            >
-              <p className="text-sm font-bold text-ink">
-                {selectedOrder.customer_name}
-              </p>
-
-              <p className="mt-1 text-sm font-semibold text-primary">
-                {selectedOrder.service_type || "Inspection Visit"}
-              </p>
-
-              {selectedOrder.customer_phone && (
-                <div className="mt-3 flex items-center gap-2 text-sm text-muted">
-                  <Phone className="h-4 w-4" />
-
-                  <span>{selectedOrder.customer_phone}</span>
-                </div>
-              )}
-
-              {selectedOrder.customer_address && (
-                <div className="mt-2 flex items-start gap-2 text-sm text-muted">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-
-                  <span>{selectedOrder.customer_address}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Warning */}
-            <p className="mt-4 text-xs leading-5 text-muted">
-              Only mark this job as completed after the electrical work has been
-              finished successfully.
-            </p>
-
-            {/* Actions */}
-            <div className="mt-6 flex gap-3">
-              {/* Cancel */}
-              <button
-                type="button"
-                onClick={() => setSelectedOrder(null)}
-                disabled={completeLoading}
-                className="
-                  flex-1
-                  rounded-xl
-                  border
-                  border-slate-200
-                  bg-white
-                  px-4
-                  py-3
-                  text-sm
-                  font-semibold
-                  text-ink
-                  transition
-                  hover:bg-slate-50
-                  disabled:cursor-not-allowed
-                  disabled:opacity-50
-                "
-              >
-                Cancel
-              </button>
-
-              {/* Complete */}
-              <button
-                type="button"
-                onClick={handleMarkComplete}
-                disabled={completeLoading}
-                className="
-                  flex-1
-                  rounded-xl
-                  bg-primary
-                  px-4
-                  py-3
-                  text-sm
-                  font-bold
-                  text-white
-                  transition
-                  hover:opacity-90
-                  disabled:cursor-not-allowed
-                  disabled:opacity-60
-                "
-              >
-                {completeLoading ? "Completing..." : "Yes, Complete"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          setSelectedOrder(null);
+        }}
+      />
     </div>
   );
 };

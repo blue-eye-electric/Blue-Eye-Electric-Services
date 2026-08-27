@@ -10,6 +10,7 @@ import { PrimaryButton } from "../../../../atoms/PrimaryButton";
 import type { Order } from "../../../../types/order";
 import type { Electrician } from "../../../../types/electrician";
 import { findDistanceOfAllElectricians } from "../../../../services/distanceService";
+import PageLoader from "../../../../atoms/PageLoader";
 
 type AssignElectricianModalProps = {
   isOpen: boolean;
@@ -90,8 +91,6 @@ export default function AssignElectricianModal({
     }
   };
 
-  if (isLoading) return <h1>Loading...</h1>;
-
   return (
     <div
       className="
@@ -165,39 +164,44 @@ export default function AssignElectricianModal({
             <X className="h-4 w-4" />
           </button>
         </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center p-4 min-h-[200px]">
+            Loading...
+          </div>
+        ) : (
+          <>
+            {/* Body */}
+            <div className="max-h-[60vh] overflow-y-auto p-6">
+              <p className="mb-4 text-sm font-semibold text-ink">
+                Select an electrician
+              </p>
 
-        {/* Body */}
-        <div className="max-h-[60vh] overflow-y-auto p-6">
-          <p className="mb-4 text-sm font-semibold text-ink">
-            Select an electrician
-          </p>
+              <div className="space-y-3">
+                {electricians.length === 0 ? (
+                  <div className="rounded-2xl bg-slate-50 p-6 text-center">
+                    <UserRound className="mx-auto h-8 w-8 text-slate-300" />
 
-          <div className="space-y-3">
-            {electricians.length === 0 ? (
-              <div className="rounded-2xl bg-slate-50 p-6 text-center">
-                <UserRound className="mx-auto h-8 w-8 text-slate-300" />
+                    <p className="mt-3 text-sm font-semibold text-ink">
+                      No electricians found
+                    </p>
 
-                <p className="mt-3 text-sm font-semibold text-ink">
-                  No electricians found
-                </p>
-
-                <p className="mt-1 text-xs text-muted">
-                  Register an electrician before assigning this order.
-                </p>
-              </div>
-            ) : (
-              electricians.map((electrician) => {
-                const selected = selectedId === electrician.id;
-                const [distance, duration] = electricianTravelMap[
-                  electrician.id
-                ] ?? [undefined, undefined];
-                return (
-                  <button
-                    key={electrician.id}
-                    type="button"
-                    disabled={isSubmitting}
-                    onClick={() => setSelectedId(electrician.id)}
-                    className={`
+                    <p className="mt-1 text-xs text-muted">
+                      Register an electrician before assigning this order.
+                    </p>
+                  </div>
+                ) : (
+                  electricians.map((electrician) => {
+                    const selected = selectedId === electrician.id;
+                    const [distance, duration] = electricianTravelMap[
+                      electrician.id
+                    ] ?? [undefined, undefined];
+                    return (
+                      <button
+                        key={electrician.id}
+                        type="button"
+                        disabled={isSubmitting}
+                        onClick={() => setSelectedId(electrician.id)}
+                        className={`
                       flex
                       w-full
                       items-center
@@ -213,9 +217,9 @@ export default function AssignElectricianModal({
                           : "border-slate-200 bg-white hover:bg-slate-50"
                       }
                     `}
-                  >
-                    <div
-                      className={`
+                      >
+                        <div
+                          className={`
     grid
     h-11
     w-11
@@ -229,72 +233,76 @@ export default function AssignElectricianModal({
         : "bg-white text-primary border border-primary"
     }
   `}
-                    >
-                      {electrician.profile_photo_url ? (
-                        <img
-                          src={electrician.profile_photo_url}
-                          alt={electrician.name}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <UserRound className="h-5 w-5" />
-                      )}
-                    </div>
+                        >
+                          {electrician.profile_photo_url ? (
+                            <img
+                              src={electrician.profile_photo_url}
+                              alt={electrician.name}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <UserRound className="h-5 w-5" />
+                          )}
+                        </div>
 
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-bold text-ink">
-                        {electrician.name}
-                      </p>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-bold text-ink">
+                            {electrician.name}
+                          </p>
 
-                      <p className="mt-1 flex items-center gap-1 text-xs text-muted">
-                        <Phone className="h-3 w-3" />
-                        {electrician.mobile_number}
-                      </p>
-                      {distance && (
-                        <p className="mt-1 flex items-center gap-1 text-xs text-muted">
-                          <MapPin className="h-3 w-3" />
-                          Distance : {distance} Kms
-                        </p>
-                      )}
-                      {duration && (
-                        <p className="mt-1 flex items-center gap-1 text-xs text-muted">
-                          <Clock className="h-3 w-3" />
-                          Duration : {duration} min
-                        </p>
-                      )}
-                    </div>
+                          <p className="mt-1 flex items-center gap-1 text-xs text-muted">
+                            <Phone className="h-3 w-3" />
+                            {electrician.mobile_number}
+                          </p>
+                          {distance && (
+                            <p className="mt-1 flex items-center gap-1 text-xs text-muted">
+                              <MapPin className="h-3 w-3" />
+                              Distance : {distance} Kms
+                            </p>
+                          )}
+                          {duration && (
+                            <p className="mt-1 flex items-center gap-1 text-xs text-muted">
+                              <Clock className="h-3 w-3" />
+                              Duration : {duration} min
+                            </p>
+                          )}
+                        </div>
 
-                    {selected && (
-                      <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
-                    )}
-                  </button>
-                );
-              })
-            )}
-          </div>
+                        {selected && (
+                          <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
+                        )}
+                      </button>
+                    );
+                  })
+                )}
+              </div>
 
-          {error && (
-            <p className="mt-4 text-xs font-medium text-orange">{error}</p>
-          )}
-        </div>
+              {error && (
+                <p className="mt-4 text-xs font-medium text-error">{error}</p>
+              )}
+            </div>
 
-        {/* Footer */}
-        <div
-          className="
+            {/* Footer */}
+            <div
+              className="
             border-t
             border-slate-200
             bg-slate-50/70
             p-5
           "
-        >
-          <PrimaryButton
-            fullWidth
-            disabled={isSubmitting || electricians.length === 0}
-            onClick={handleAssign}
-          >
-            {isSubmitting ? "Assigning..." : "Assign Electrician"}
-          </PrimaryButton>
-        </div>
+            >
+              <PrimaryButton
+                fullWidth
+                disabled={
+                  isSubmitting || electricians.length === 0 || !selectedId
+                }
+                onClick={handleAssign}
+              >
+                {isSubmitting ? "Assigning..." : "Assign Electrician"}
+              </PrimaryButton>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

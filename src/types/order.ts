@@ -18,7 +18,15 @@ export interface Order {
   description: string | null;
   status: string;
   created_at: string;
-  photo_urls: File[]
+  photo_urls: string[];
+  mode_of_payment: "cash" | "UPI" | null;
+  payment_details: PaymentDetail[];
+  total_amount: number | null;
+}
+
+export interface PaymentDetail {
+  description: string;
+  amount: number;
 }
 
 export interface GetOrdersResponse {
@@ -29,4 +37,12 @@ export interface GetOrdersResponse {
 export interface GetOrdersParams {
   electricianId?: string;
   status?: string;
+  month?: number;
+  year?: number;
+}
+
+export interface CompleteOrderPayload {
+  mode_of_payment: "cash" | "UPI";
+  payment_details: PaymentDetail[];
+  total_amount: number;
 }

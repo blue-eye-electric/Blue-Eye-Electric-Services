@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   CalendarDays,
   Clock3,
@@ -6,6 +7,7 @@ import {
   MessageCircle,
   Phone,
   UserRound,
+  ChevronDown,
 } from "lucide-react";
 
 import { PrimaryButton } from "../../atoms/PrimaryButton";
@@ -29,6 +31,7 @@ const OrderCard = ({
   onMarkComplete,
   role,
 }: OrderCardProps) => {
+  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
   const assignedElectrician = electricians.find(
     (electrician) => electrician.id === order.electrician_id,
   );
@@ -67,7 +70,6 @@ const OrderCard = ({
                 bg-primary/10
                 px-2.5
                 py-1
-                text-xs
                 font-bold
                 text-primary
               "
@@ -78,8 +80,15 @@ const OrderCard = ({
             <StatusBadge status={order.status} />
           </div>
 
-          <p className="mt-2 text-xs text-muted">
-            Created {new Date(order.created_at).toLocaleString()}
+          <p className="mt-2 text-sm text-muted">
+            Received :{" "}
+            {new Date(order.created_at).toLocaleString([], {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </p>
         </div>
 
@@ -111,16 +120,16 @@ const OrderCard = ({
           </p>
 
           <div className="flex gap-3">
-            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-slate-100">
-              <UserRound className="h-4 w-4 text-slate-600" />
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-slate-100">
+              <UserRound className="h-6 w-6 text-slate-600" />
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-ink">
+              <p className="text-md font-semibold text-ink">
                 {order.customer_name}
               </p>
 
-              <p className="mt-1 flex items-center gap-1 text-xs text-muted">
+              <p className="mt-1 flex items-center gap-1 text-md text-muted">
                 <Phone className="h-3 w-3" />
                 {order.customer_phone}
               </p>
@@ -134,12 +143,12 @@ const OrderCard = ({
             Service
           </p>
 
-          <p className="text-sm font-semibold text-ink">
+          <p className="text-md font-semibold text-ink">
             {order.service_type || "Inspection Visit"}
           </p>
 
           {order.description && (
-            <p className="mt-1 line-clamp-2 text-xs text-muted">
+            <p className="mt-1 line-clamp-2 text-md text-muted">
               {order.description}
             </p>
           )}
@@ -152,7 +161,7 @@ const OrderCard = ({
           </p>
 
           <div className="space-y-2">
-            <p className="flex items-center gap-2 text-sm text-ink">
+            <p className="flex items-center gap-2 text-md text-ink">
               <CalendarDays className="h-4 w-4 text-primary" />
               {order.service_date}
             </p>
@@ -183,7 +192,7 @@ const OrderCard = ({
           </div>
 
           <p className="flex gap-2 text-sm text-ink">
-            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <MapPin className=" h-6 w-6 shrink-0 text-primary" />
 
             <span className="line-clamp-3">{order.customer_address}</span>
           </p>
@@ -197,7 +206,7 @@ const OrderCard = ({
           </p>
 
           <div className="flex flex-wrap gap-3">
-            {order.photo_urls.map((photo: any, index: number) => (
+            {order.photo_urls.map((photo, index) => (
               <a
                 key={`${photo}-${index}`}
                 href={photo}
@@ -215,6 +224,57 @@ const OrderCard = ({
           </div>
         </div>
       )}
+
+      {role === "admin" &&
+        order.status === "completed" &&
+        typeof order.total_amount === "number" && (
+          <div className="mt-5 border-t border-slate-100 pt-5">
+            <div className="flex flex-row justify-center items-center">
+              <p className="text-sm text-ink">
+                Payment Mode :{" "}
+                <span className="font-bold">
+                  {order.mode_of_payment === "UPI" ? "UPI" : "Cash"}
+                </span>
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowPaymentDetails((isVisible) => !isVisible)}
+              className="flex w-full items-center justify-between text-left"
+            >
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted">
+                Total Amount
+              </span>
+              <span className="flex items-center gap-2 text-lg font-bold text-primary">
+                ₹{order.total_amount.toLocaleString("en-IN")}
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform ${showPaymentDetails ? "rotate-180" : ""}`}
+                />
+              </span>
+            </button>
+
+            {showPaymentDetails && (
+              <div className="mt-4 overflow-hidden rounded-xl border border-slate-200">
+                <div className="grid grid-cols-[1fr_auto] bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-muted">
+                  <span>Description</span>
+                  <span>Amount</span>
+                </div>
+                {(order.payment_details ?? []).map((detail, index) => (
+                  <div
+                    key={`${detail.description}-${index}`}
+                    className="grid grid-cols-[1fr_auto] border-t border-slate-100 px-4 py-3 text-sm text-ink"
+                  >
+                    <span>{detail.description}</span>
+                    <span>₹{detail.amount.toLocaleString("en-IN")}</span>
+                  </div>
+                ))}
+                <div className="border-t border-slate-200 px-4 py-3 text-xs text-muted">
+                  Payment: {order.mode_of_payment === "UPI" ? "UPI" : "Cash"}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
       {/* Assigned Electrician */}
       {assignedElectrician && (

@@ -13,7 +13,7 @@ const Footer = () => {
           className="text-md hover:text-primary"
         >
           Made with <span className="text-primary">♥</span> by{" "}
-          <span className="font-bold">SP Soft Solution</span>
+          <span className="font-bold underline">SP Soft Solution</span>
         </a>
       </div>
     </footer>
