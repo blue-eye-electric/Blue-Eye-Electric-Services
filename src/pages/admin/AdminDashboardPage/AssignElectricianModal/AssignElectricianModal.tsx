@@ -10,7 +10,6 @@ import { PrimaryButton } from "../../../../atoms/PrimaryButton";
 import type { Order } from "../../../../types/order";
 import type { Electrician } from "../../../../types/electrician";
 import { findDistanceOfAllElectricians } from "../../../../services/distanceService";
-import PageLoader from "../../../../atoms/PageLoader";
 
 type AssignElectricianModalProps = {
   isOpen: boolean;
