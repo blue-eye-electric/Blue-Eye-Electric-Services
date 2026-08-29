@@ -20,6 +20,7 @@ const AdminLoginPage = lazy(() => import("./pages/admin/AdminLoginPage"));
 const AdminDashboardPage = lazy(
   () => import("./pages/admin/AdminDashboardPage"),
 );
+const AdminProjectPage = lazy(() => import("./pages/admin/AdminProjectPage"));
 const AdminElectricianPage = lazy(
   () => import("./pages/admin/AdminElectricianPage"),
 );
@@ -73,6 +74,14 @@ function App() {
               element={
                 <ProtectedRoute role="admin">
                   <AdminDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/project"
+              element={
+                <ProtectedRoute role="admin">
+                  <AdminProjectPage />
                 </ProtectedRoute>
               }
             />

@@ -20,6 +20,7 @@ export const createOrder = async (
   formData.append("serviceDate", data.serviceDate);
   formData.append("serviceTime", data.serviceTime);
   formData.append("inspection", String(data.inspection));
+  formData.append("isProjectDiscussion", String(data.isProjectDiscussion));
 
   if (data.service !== null) {
     formData.append("service", data.service);
@@ -51,7 +52,6 @@ export const createOrder = async (
 export const getOrders = async (
   params?: GetOrdersParams,
 ): Promise<GetOrdersResponse> => {
-
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -60,13 +60,28 @@ export const getOrders = async (
 
   const searchParams = new URLSearchParams();
 
+  if (params?.electricianId) {
+    searchParams.append("electricianId", params.electricianId);
+  }
+
   if (params?.status) {
     searchParams.append("status", params.status);
   }
 
-  if (params?.month !== undefined && params?.year !== undefined) {
-    searchParams.append("month", String(params.month));
-    searchParams.append("year", String(params.year));
+  if (params?.isProjectDiscussion !== undefined) {
+    searchParams.append("isProjectDiscussion", String(params.isProjectDiscussion));
+    searchParams.append(
+      "is_project_discussion",
+      String(params.isProjectDiscussion),
+    );
+  }
+
+  if (params?.page !== undefined) {
+    searchParams.append("page", String(params.page));
+  }
+
+  if (params?.limit !== undefined) {
+    searchParams.append("limit", String(params.limit));
   }
 
   const queryString = searchParams.toString();
@@ -87,9 +102,7 @@ export const getOrders = async (
   const result = await response.json();
 
   if (!response.ok) {
-    throw new Error(
-      result.message || "Failed to fetch orders",
-    );
+    throw new Error(result.message || "Failed to fetch orders");
   }
 
   return result;

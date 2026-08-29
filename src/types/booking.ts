@@ -1,4 +1,5 @@
 export type InspectionOption = "yes" | "no";
+export type BookingMode = "projectDiscussion" | "electrician";
 
 export type BookingForm = {
   name: string;
@@ -23,6 +24,7 @@ export type BookingPayload = {
   serviceDate: string;
   serviceTime: string;
   inspection: boolean;
+  isProjectDiscussion: boolean;
   service: string | null;
   description: string | null;
   photos: File[];

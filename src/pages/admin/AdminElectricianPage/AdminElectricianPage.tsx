@@ -108,7 +108,10 @@ const AdminElectricianPage = () => {
       <main className="mx-auto max-w-5xl px-5 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex flex-col-reverse md:flex-row md:items-center justify-between gap-3">
+          <div className="flex flex-row items-center gap-3">
+            <SecondaryButton onClick={() => navigate("/admin/dashboard")}>
+              <ArrowLeft className="h-4 w-4" />
+            </SecondaryButton>
             <div className="flex flex-row gap-2 items-center ">
               <div
                 className="
@@ -135,12 +138,6 @@ const AdminElectricianPage = () => {
                 </p>
               </div>
             </div>
-            <SecondaryButton
-              icon={<ArrowLeft className="h-4 w-4" />}
-              onClick={() => navigate("/admin/dashboard")}
-            >
-              Back to Dashboard
-            </SecondaryButton>
           </div>
         </div>
 

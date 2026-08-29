@@ -9,7 +9,7 @@ import { getOrders } from "../../../services/orderService";
 
 // Components
 import OrderCard from "../../../organisms/OrderCard";
-import CompleteJobModal from "./CompleteJobModal";
+import CompleteJobModal from "../../../organisms/CompleteJobModal";
 
 // Interfaces
 import type { Order } from "../../../types/order";

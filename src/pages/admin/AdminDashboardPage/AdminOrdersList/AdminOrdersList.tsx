@@ -11,13 +11,20 @@ import { assignElectrician } from "../../../../services/orderService";
 // Components
 import AssignElectricianModal from "../AssignElectricianModal";
 import OrderCard from "../../../../organisms/OrderCard/OrderCard";
+import CompleteJobModal from "../../../../organisms/CompleteJobModal";
 
 // Interfaces
 import type { Order } from "../../../../types/order";
 import type { Electrician } from "../../../../types/electrician";
 import { SecondaryButton } from "../../../../atoms";
 
-const AdminOrdersList = () => {
+type AdminOrdersListProps = {
+  isProjectDiscussion?: boolean;
+};
+
+const AdminOrdersList = ({
+  isProjectDiscussion = false,
+}: AdminOrdersListProps) => {
   const [orders, setOrders] = useState<Order[]>([]);
 
   const [electricians, setElectricians] = useState<Electrician[]>([]);
@@ -25,15 +32,15 @@ const AdminOrdersList = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-
-  const [oldestLoadedMonth, setOldestLoadedMonth] = useState(() => {
-    const currentDate = new Date();
-
-    return {
-      month: currentDate.getMonth() + 1,
-      year: currentDate.getFullYear(),
-    };
-  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState<{
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  } | null>(null);
 
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
@@ -41,42 +48,41 @@ const AdminOrdersList = () => {
 
   const [error, setError] = useState("");
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (pageToLoad = 1, append = false) => {
     try {
-      setIsLoading(true);
+      setIsLoading(pageToLoad === 1);
       setError("");
 
-      const result = await getOrders();
+      const result = await getOrders({
+        page: pageToLoad,
+        limit: 10,
+        isProjectDiscussion,
+      });
 
-      setOrders(result.orders);
+      setOrders((currentOrders) =>
+        append ? [...currentOrders, ...result.orders] : result.orders,
+      );
+      setPagination(result.pagination ?? null);
+      setCurrentPage(pageToLoad);
     } catch (error) {
       setError(
         error instanceof Error ? error.message : "Failed to fetch orders",
       );
     } finally {
-      setIsLoading(false);
+      if (pageToLoad === 1) {
+        setIsLoading(false);
+      }
     }
   };
 
-  const loadPreviousMonth = async () => {
-    const previousMonth =
-      oldestLoadedMonth.month === 1 ? 12 : oldestLoadedMonth.month - 1;
-    const previousYear =
-      oldestLoadedMonth.month === 1
-        ? oldestLoadedMonth.year - 1
-        : oldestLoadedMonth.year;
+  const loadMoreOrders = async () => {
+    if (!pagination?.hasNextPage) return;
 
     try {
       setIsLoadingMore(true);
       setError("");
 
-      const result = await getOrders({
-        month: previousMonth,
-        year: previousYear,
-      });
-
-      setOrders((currentOrders) => [...currentOrders, ...result.orders]);
-      setOldestLoadedMonth({ month: previousMonth, year: previousYear });
+      await fetchOrders(currentPage + 1, true);
     } catch (error) {
       setError(
         error instanceof Error ? error.message : "Failed to fetch orders",
@@ -97,7 +103,7 @@ const AdminOrdersList = () => {
   };
 
   useEffect(() => {
-    fetchOrders();
+    fetchOrders(1, false);
     fetchElectricians();
   }, []);
 
@@ -134,6 +140,14 @@ const AdminOrdersList = () => {
     }
   };
 
+  const handleProjectOrderComplete = async () => {
+    if (!selectedOrder) return;
+
+    fetchOrders(1, false);
+
+    setSelectedOrder(null);
+  };
+
   if (isLoading) {
     return <div className="p-8 text-sm text-muted">Loading orders...</div>;
   }
@@ -150,11 +164,13 @@ const AdminOrdersList = () => {
           <div className="mt-2 flex items-end justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold text-ink md:text-4xl">
-                Orders
+                {isProjectDiscussion ? "Project Discussion Orders" : "Orders"}
               </h1>
 
               <p className="mt-1 text-sm text-muted">
-                Manage bookings and assign electricians.
+                {isProjectDiscussion
+                  ? "Review project discussion bookings and complete them once approved."
+                  : "Manage bookings and assign electricians."}
               </p>
             </div>
 
@@ -190,7 +206,12 @@ const AdminOrdersList = () => {
                 key={order.id}
                 order={order}
                 electricians={electricians}
-                onAssign={() => setSelectedOrder(order)}
+                onAssign={() =>
+                  !order.is_project_discussion && setSelectedOrder(order)
+                }
+                onMarkComplete={() =>
+                  order.is_project_discussion && setSelectedOrder(order)
+                }
                 role="admin"
               />
             ))}
@@ -198,14 +219,18 @@ const AdminOrdersList = () => {
         )}
 
         <div className="flex justify-center py-8">
-          <SecondaryButton onClick={loadPreviousMonth} disabled={isLoadingMore}>
-            {isLoadingMore ? "Loading orders..." : "Load more"}
-          </SecondaryButton>
+          {pagination?.hasNextPage ? (
+            <SecondaryButton onClick={loadMoreOrders} disabled={isLoadingMore}>
+              {isLoadingMore ? "Loading orders..." : "Load more"}
+            </SecondaryButton>
+          ) : (
+            <p>No more orders</p>
+          )}
         </div>
       </div>
 
       {/* Assign Modal */}
-      {selectedOrder && (
+      {selectedOrder && !selectedOrder.is_project_discussion && (
         <AssignElectricianModal
           isOpen={true}
           order={selectedOrder}
@@ -213,6 +238,15 @@ const AdminOrdersList = () => {
           isSubmitting={isAssigning}
           onClose={() => !isAssigning && setSelectedOrder(null)}
           onAssign={handleAssign}
+        />
+      )}
+
+      {selectedOrder && selectedOrder.is_project_discussion && (
+        <CompleteJobModal
+          order={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+          onCompleted={handleProjectOrderComplete}
+          showBlankPaymentDetails
         />
       )}
     </div>

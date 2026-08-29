@@ -2,27 +2,29 @@ import { useEffect, useState } from "react";
 import { Check, MapPin, Phone, X } from "lucide-react";
 
 // Assets
-import UPIqrImage from "../../../../assets/payment-qr.png";
+import UPIqrImage from "../../assets/payment-qr.png";
 
 // Services
-import { completeOrder } from "../../../../services/orderService";
+import { completeOrder } from "../../services/orderService";
 
 // Components
-import { AppSelect, PrimaryButton, SecondaryButton } from "../../../../atoms";
+import { AppSelect, PrimaryButton, SecondaryButton } from "../../atoms";
 
 // Interfaces
-import type { Order, PaymentDetail } from "../../../../types/order";
+import type { Order, PaymentDetail } from "../../types/order";
 
 type CompleteJobModalProps = {
   order: Order | null;
   onClose: () => void;
   onCompleted: () => void;
+  showBlankPaymentDetails?: boolean;
 };
 
 const CompleteJobModal = ({
   order,
   onClose,
   onCompleted,
+  showBlankPaymentDetails = false,
 }: CompleteJobModalProps) => {
   const [completeLoading, setCompleteLoading] = useState(false);
   const [paymentMode, setPaymentMode] = useState<"cash" | "UPI">("cash");
@@ -34,7 +36,7 @@ const CompleteJobModal = ({
     setPaymentError("");
 
     setPaymentDetails(
-      selectedOrder.service_type === null
+      selectedOrder.service_type === null && !showBlankPaymentDetails
         ? [
             {
               description: "Inspection charge",
@@ -182,7 +184,7 @@ const CompleteJobModal = ({
         className="
           max-h-[90vh]
           w-full
-          max-w-md
+          max-w-2xl
           overflow-y-auto
           rounded-3xl
           bg-white
@@ -331,7 +333,9 @@ const CompleteJobModal = ({
             {/* Rows */}
             {paymentDetails.map((detail, index) => {
               const isInspectionCharge =
-                order.service_type === null && index === 0;
+                order.service_type === null &&
+                !showBlankPaymentDetails &&
+                index === 0;
 
               return (
                 <div

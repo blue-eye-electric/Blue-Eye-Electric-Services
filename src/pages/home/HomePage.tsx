@@ -1,5 +1,7 @@
 import { lazy, Suspense, useState } from "react";
 
+import type { BookingMode } from "../../types/booking";
+
 // Components
 import Navbar from "../../organisms/Navbar";
 import HeroSection from "./organisms/HeroSection";
@@ -17,10 +19,17 @@ export default function HomePage() {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [currentBookingService, setCurrentBookingService] = useState("");
   const [isInspectionBooking, setIsInspectionBooking] = useState(false);
+  const [currentBookingType, setCurrentBookingType] =
+    useState<BookingMode>("electrician");
 
-  const openBooking = (service?: string, inspection = false) => {
+  const openBooking = (
+    service?: string,
+    inspection = false,
+    bookingType: BookingMode = "electrician",
+  ) => {
     setCurrentBookingService(service || "");
     setIsInspectionBooking(inspection);
+    setCurrentBookingType(bookingType);
     setIsBookingOpen(true);
   };
 
@@ -50,6 +59,7 @@ export default function HomePage() {
             onClose={closeBooking}
             service={currentBookingService}
             inspection={isInspectionBooking}
+            bookingType={currentBookingType}
           />
         </Suspense>
       )}

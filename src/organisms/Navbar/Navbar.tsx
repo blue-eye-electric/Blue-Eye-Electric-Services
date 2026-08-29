@@ -25,7 +25,7 @@ const Navbar = () => {
       border-border
       px-[6vw]
       py-2
-      z-[10]
+      z-[50]
     "
     >
       <div className="flex w-full items-center justify-between max-w-5xl mx-auto">

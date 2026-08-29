@@ -92,11 +92,19 @@ const OrderCard = ({
           </p>
         </div>
 
-        {order.status !== "completed" && role === "admin" && (
-          <PrimaryButton onClick={onAssign}>
-            {order.electrician_id ? "Change Electrician" : "Assign Electrician"}
-          </PrimaryButton>
-        )}
+        {order.status !== "completed" &&
+          role === "admin" &&
+          (order.is_project_discussion ? (
+            <PrimaryButton onClick={onMarkComplete}>
+              Mark Complete
+            </PrimaryButton>
+          ) : (
+            <PrimaryButton onClick={onAssign}>
+              {order.electrician_id
+                ? "Change Electrician"
+                : "Assign Electrician"}
+            </PrimaryButton>
+          ))}
 
         {order.status !== "completed" && role === "electrician" && (
           <PrimaryButton onClick={onMarkComplete}>Mark Complete</PrimaryButton>

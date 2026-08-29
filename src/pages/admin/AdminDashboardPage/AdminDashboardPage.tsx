@@ -74,12 +74,21 @@ const AdminDashboardPage = () => {
             </p>
           </div>
 
-          <SecondaryButton
-            icon={<ArrowRight className="w-4 h-4" />}
-            onClick={() => navigate("/admin/electricians")}
-          >
-            See Electricians
-          </SecondaryButton>
+          <div className="flex flex-col gap-3">
+            <SecondaryButton
+              icon={<ArrowRight className="w-4 h-4" />}
+              onClick={() => navigate("/admin/project")}
+            >
+              Project Orders
+            </SecondaryButton>
+
+            <SecondaryButton
+              icon={<ArrowRight className="w-4 h-4" />}
+              onClick={() => navigate("/admin/electricians")}
+            >
+              See Electricians
+            </SecondaryButton>
+          </div>
         </div>
 
         {/* Content */}

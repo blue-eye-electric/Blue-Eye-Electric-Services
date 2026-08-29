@@ -16,6 +16,7 @@ export interface Order {
   service_time: string;
   service_type: string | null;
   description: string | null;
+  is_project_discussion?: boolean;
   status: string;
   created_at: string;
   photo_urls: string[];
@@ -32,13 +33,22 @@ export interface PaymentDetail {
 export interface GetOrdersResponse {
   success: boolean;
   orders: Order[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
 }
 
 export interface GetOrdersParams {
   electricianId?: string;
   status?: string;
-  month?: number;
-  year?: number;
+  page?: number;
+  limit?: number;
+  isProjectDiscussion?: boolean;
 }
 
 export interface CompleteOrderPayload {
