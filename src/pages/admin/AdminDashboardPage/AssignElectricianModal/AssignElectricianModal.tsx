@@ -1,7 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // Icons
-import { CheckCircle2, Clock, MapPin, Phone, UserRound, X } from "lucide-react";
+import {
+  CheckCircle2,
+  Clock,
+  MapPinHouse,
+  Phone,
+  Route,
+  UserRound,
+  X,
+} from "lucide-react";
 
 // Components
 import { PrimaryButton } from "../../../../atoms/PrimaryButton";
@@ -72,6 +80,19 @@ export default function AssignElectricianModal({
   if (!isOpen) {
     return null;
   }
+
+  const sortedElectricians = useMemo(() => {
+    return [...electricians].sort((a, b) => {
+      const distanceA = electricianTravelMap[a.id]?.[0];
+      const distanceB = electricianTravelMap[b.id]?.[0];
+
+      // No distance → keep at bottom
+      if (distanceA == null) return 1;
+      if (distanceB == null) return -1;
+
+      return distanceA - distanceB;
+    });
+  }, [electricians, electricianTravelMap]);
 
   const handleAssign = async () => {
     if (!selectedId) {
@@ -176,7 +197,7 @@ export default function AssignElectricianModal({
                     </p>
                   </div>
                 ) : (
-                  electricians.map((electrician) => {
+                  sortedElectricians.map((electrician) => {
                     const selected = selectedId === electrician.id;
                     const [distance, duration] = electricianTravelMap[
                       electrician.id
@@ -240,18 +261,25 @@ export default function AssignElectricianModal({
                             <Phone className="h-3 w-3" />
                             {electrician.mobile_number}
                           </p>
-                          {distance && (
-                            <p className="mt-1 flex items-center gap-1 text-xs text-muted">
-                              <MapPin className="h-3 w-3" />
-                              Distance : {distance} Kms
-                            </p>
-                          )}
-                          {duration && (
-                            <p className="mt-1 flex items-center gap-1 text-xs text-muted">
-                              <Clock className="h-3 w-3" />
-                              Duration : {duration} min
-                            </p>
-                          )}
+                          <p className="mt-1 flex items-center gap-1 text-xs text-muted">
+                            <MapPinHouse className="h-3 w-3" />
+                            {electrician.current_address}
+                          </p>
+
+                          <div className="mt-1 flex flex-row gap-1 justify-between">
+                            {distance && (
+                              <p className="mt-1 flex items-center gap-1 text-xs text-muted">
+                                <Route className="h-3 w-3" />
+                                Distance : {distance} Kms
+                              </p>
+                            )}
+                            {duration && (
+                              <p className="mt-1 flex items-center gap-1 text-xs text-muted">
+                                <Clock className="h-3 w-3" />
+                                Duration : {duration} min
+                              </p>
+                            )}
+                          </div>
                         </div>
 
                         {selected && (

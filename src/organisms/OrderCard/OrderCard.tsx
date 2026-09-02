@@ -322,14 +322,14 @@ const OrderCard = ({
 
 Your electrician has been assigned for your service request number *${order.id}*.
 
-🔧 Electrician: ${assignedElectrician.name}
-📞 Electrician Contact: ${assignedElectrician.mobile_number}
+\u{1F527} Electrician: ${assignedElectrician.name}
+\u{1F4DE} Electrician Contact: ${assignedElectrician.mobile_number}
 
-📋 Service: ${order.service_type || "Electrical Service"}
-📅 Date: ${order.service_date}
-⏰ Time: ${order.service_time}
+\u{1F4CB} Service: ${order.service_type || "Electrical Service"}
+\u{1F4C5} Date: ${order.service_date}
+\u{23F0} Time: ${order.service_time}
 
-📍 Address:
+\u{1F4CD} Address:
 ${order.customer_address}
 
 You can contact the electrician directly on WhatsApp for any coordination.
@@ -372,20 +372,20 @@ Blue Eye Electric`,
 
 You have been assigned a new service request.
 
-👤 Customer: ${order.customer_name}
-📞 Customer Contact: ${order.customer_phone}
+\u{1F464} Customer: ${order.customer_name}
+\u{1F4DE} Customer Contact: ${order.customer_phone}
 
-📋 Service: ${order.service_type || "Electrical Service"}
+\u{1F4CB} Service: ${order.service_type || "Electrical Service"}
 
-${order.description ? `📝 Description:\n${order.description}\n` : ""}
+${order.description ? `\u{1F4DD} Description:\n${order.description}\n` : ""}
 
-📅 Date: ${order.service_date}
-⏰ Time: ${order.service_time}
+\u{1F4C5} Date: ${order.service_date}
+\u{23F0} Time: ${order.service_time}
 
-📍 Customer Address:
+\u{1F4CD} Customer Address:
 ${order.customer_address}
 
-📍 Google Maps Location:
+\u{1F4CD} Google Maps Location:
 ${getGoogleMapsUrl(order.latitude, order.longitude)}
 
 Please contact the customer and coordinate the visit.
