@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   ClipboardList,
   Clock3,
+  Home,
   MapPin,
   Trash2,
   UserRound,
@@ -38,6 +39,9 @@ import { serviceOptions, timeOptions } from "../../constants/services";
 
 // Services
 import { createOrder } from "../../services/orderService";
+
+// Components
+import ServiceTypeCard from "./ServiceTypeCard";
 
 type BookingModalProps = {
   isOpen: boolean;
@@ -329,8 +333,6 @@ const BookingModal = ({
               <>
                 {/* Intro */}
                 <div className="mb-8">
-                  <Eyebrow>Book an electrician</Eyebrow>
-
                   <h2
                     className="
                       mt-3
@@ -342,9 +344,7 @@ const BookingModal = ({
                       md:text-5xl
                     "
                   >
-                    Tell us what's
-                    <br />
-                    <AccentText className="text-primary">going on.</AccentText>
+                    What do you need?
                   </h2>
 
                   <p
@@ -356,54 +356,47 @@ const BookingModal = ({
                       text-muted
                     "
                   >
-                    Share a few details and we'll arrange a trusted electrician
-                    for your requirement.
+                    Choose the service that matches your requirement.
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-7">
                   {!hasSelectedBookingMode && (
-                    <section>
-                      <SectionHeader
-                        icon={<Zap className="h-4 w-4" />}
-                        title="Choose booking type"
-                        description="Select the kind of service you need"
+                    <div className="grid grid-cols-2 gap-5 md:grid-cols-2">
+                      <ServiceTypeCard
+                        icon={<Zap size={40} />}
+                        title="Book an Electrician"
+                        description="For quick repairs, installations and other small electrical works."
+                        features={[
+                          "Fan, Light, Switch, Socket Repair",
+                          "MCB, Fuse, Inverter, Wiring",
+                          "Quick Visit & Fast Service",
+                          "Verified Electricians",
+                        ]}
+                        buttonText="Book Electrician"
+                        active
+                        onClick={() => {
+                          handleBookingModeSelect("electrician");
+                        }}
                       />
 
-                      <div className="grid gap-3 md:grid-cols-2">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleBookingModeSelect("projectDiscussion")
-                          }
-                          className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left transition hover:border-slate-300"
-                        >
-                          <p className="text-lg font-semibold">
-                            Discuss Your Project
-                          </p>
-                          <p className="mt-1 text-sm leading-5 text-muted">
-                            Have a large project or major work requirement?
-                            Share your requirements with us. Our team will visit
-                            your site, assess the scope of work and provide a
-                            quotation accordingly.
-                          </p>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => handleBookingModeSelect("electrician")}
-                          className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left transition hover:border-slate-300"
-                        >
-                          <p className="text-lg font-semibold">
-                            Book Electrician
-                          </p>
-                          <p className="mt-1 text-sm leading-5 text-muted">
-                            Need a quick electrical repair or minor work? Book
-                            an electrician for your service requirement.
-                          </p>
-                        </button>
-                      </div>
-                    </section>
+                      <ServiceTypeCard
+                        icon={<Home size={40} />}
+                        title="New Home / Full Wiring"
+                        description="For new construction, full electrical wiring and major electrical projects."
+                        features={[
+                          "Complete House Wiring",
+                          "New Construction Projects",
+                          "Site Visit & Estimation",
+                          "Expert Team Support",
+                        ]}
+                        buttonText="Get a Quotation"
+                        active
+                        onClick={() => {
+                          handleBookingModeSelect("projectDiscussion");
+                        }}
+                      />
+                    </div>
                   )}
 
                   {hasSelectedBookingMode && (

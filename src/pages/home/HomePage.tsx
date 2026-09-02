@@ -12,6 +12,7 @@ import GuaranteeSection from "./organisms/GuaranteeSection";
 import WhyChooseUsSection from "./organisms/WhyChooseUsSection";
 import CtaSection from "./organisms/CtaSection";
 import ElectricianSection from "./organisms/ElectricianSection/ElectricianSection";
+import PromotionBannerSection from "./organisms/PromotionBannerSection";
 
 const BookingModal = lazy(() => import("../../organisms/BookingModal"));
 
@@ -43,6 +44,7 @@ export default function HomePage() {
 
       <main>
         <HeroSection onBook={openBooking} />
+        <PromotionBannerSection onBook={openBooking} />
         <UspBar />
         <ServiceSection onBook={openBooking} />
         <GuaranteeSection />

@@ -10,12 +10,14 @@ type SecondaryButtonProps = (
 ) & {
   children: ReactNode;
   icon?: ReactNode;
+  fullWidth?: boolean;
 };
 
 export function SecondaryButton({
   children,
   icon,
   className = "",
+  fullWidth = false,
   ...props
 }: SecondaryButtonProps) {
   const classNames = `
@@ -34,6 +36,8 @@ export function SecondaryButton({
     transition
     hover:-translate-y-0.5
     cursor-pointer
+            ${fullWidth ? "w-full" : ""}
+
     ${className}
   `;
 
