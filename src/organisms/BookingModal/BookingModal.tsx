@@ -3,9 +3,7 @@ import { useEffect, useState, type FormEvent } from "react";
 // Icons
 import {
   CalendarDays,
-  CheckCircle2,
   ClipboardList,
-  Clock3,
   Home,
   MapPin,
   Trash2,
