@@ -8,7 +8,7 @@ type PromotionBannerSectionProps = {
 const PromotionBannerSection = ({ onBook }: PromotionBannerSectionProps) => {
   return (
     <section className="py-10">
-      <div className="mx-auto max-w-6xl px-4">
+      <div className="mx-auto max-w-5xl px-4">
         <ServiceBannerCarousel items={serviceBanners} onClick={onBook} />
       </div>
     </section>

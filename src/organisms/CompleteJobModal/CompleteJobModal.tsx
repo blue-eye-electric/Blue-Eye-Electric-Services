@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Check, MapPin, Phone, X } from "lucide-react";
+import { Check, MapPin, Phone, Trash2, X } from "lucide-react";
 
 // Assets
 import UPIqrImage from "../../assets/payment-qr.png";
@@ -219,25 +219,9 @@ const CompleteJobModal = ({
           </div>
 
           {/* Close */}
-          <button
-            type="button"
-            onClick={handleClose}
-            disabled={completeLoading}
-            className="
-              flex
-              h-9
-              w-9
-              items-center
-              justify-center
-              rounded-lg
-              text-muted
-              transition
-              hover:bg-slate-100
-              disabled:opacity-50
-            "
-          >
+          <SecondaryButton onClick={handleClose} disabled={completeLoading}>
             <X className="h-5 w-5" />
-          </button>
+          </SecondaryButton>
         </div>
 
         {/* Selected Order */}
@@ -398,46 +382,34 @@ const CompleteJobModal = ({
                   />
 
                   {/* Remove */}
-                  <button
-                    type="button"
-                    onClick={() => removePaymentRow(index)}
-                    disabled={
-                      isInspectionCharge ||
-                      paymentDetails.length === 1 ||
-                      completeLoading
-                    }
-                    className="
-                      cursor-pointer
-                      text-lg
-                      text-muted
-                      hover:text-orange
-                      disabled:opacity-30
-                    "
+                  <div
+                    onClick={() => {
+                      if (
+                        isInspectionCharge ||
+                        paymentDetails.length === 1 ||
+                        completeLoading
+                      )
+                        return;
+                      removePaymentRow(index);
+                    }}
+                    className="flex justify-center items-center cursor-pointer"
                     aria-label="Remove payment row"
                   >
-                    ×
-                  </button>
+                    <Trash2 className="h-5 w-5 text-error/70" />
+                  </div>
                 </div>
               );
             })}
           </div>
 
           {/* Add Row */}
-          <button
-            type="button"
+          <SecondaryButton
             onClick={addPaymentRow}
             disabled={completeLoading}
-            className="
-              mt-2
-              text-sm
-              font-semibold
-              text-primary
-              hover:underline
-              disabled:opacity-50
-            "
+            className="mt-3"
           >
             + Add payment row
-          </button>
+          </SecondaryButton>
         </div>
 
         {/* Error */}

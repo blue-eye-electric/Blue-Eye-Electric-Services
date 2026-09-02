@@ -88,7 +88,6 @@ const ServiceSection = ({ onBook }: ServiceSectionProps) => {
           </p>
         </div>
         <PrimaryButton
-          fullWidth
           onClick={() => onBook(undefined, true)}
           className="text-nowrap"
         >

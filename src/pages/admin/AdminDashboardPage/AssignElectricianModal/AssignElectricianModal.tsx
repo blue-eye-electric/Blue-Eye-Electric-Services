@@ -5,10 +5,13 @@ import { CheckCircle2, Clock, MapPin, Phone, UserRound, X } from "lucide-react";
 
 // Components
 import { PrimaryButton } from "../../../../atoms/PrimaryButton";
+import { SecondaryButton } from "../../../../atoms";
 
 // Interfaces
 import type { Order } from "../../../../types/order";
 import type { Electrician } from "../../../../types/electrician";
+
+// Services
 import { findDistanceOfAllElectricians } from "../../../../services/distanceService";
 
 type AssignElectricianModalProps = {
@@ -143,25 +146,9 @@ export default function AssignElectricianModal({
             <p className="mt-1 text-xs text-muted">Order #{order.id}</p>
           </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={isSubmitting}
-            className="
-              grid
-              h-9
-              w-9
-              place-items-center
-              rounded-full
-              border
-              border-slate-200
-              bg-white
-              text-slate-500
-              hover:bg-slate-50
-            "
-          >
+          <SecondaryButton onClick={onClose} disabled={isSubmitting}>
             <X className="h-4 w-4" />
-          </button>
+          </SecondaryButton>
         </div>
         {isLoading ? (
           <div className="flex justify-center items-center p-4 min-h-[200px]">

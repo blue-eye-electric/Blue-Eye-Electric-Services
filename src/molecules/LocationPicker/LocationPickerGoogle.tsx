@@ -9,8 +9,8 @@
 // import type { LocationPickerProps, Position } from "../../types/location";
 
 // const defaultCenter: Position = {
-//   lat: 23.0225,
-//   lng: 72.5714,
+//   latitude: 23.0225,
+//   longitude: 72.5714,
 // };
 
 // const libraries: "places"[] = ["places"];
@@ -29,8 +29,8 @@
 //   const [isOpen, setIsOpen] = useState(false);
 
 //   const [position, setPosition] = useState<Position>({
-//     lat: latitude ? Number(latitude) : defaultCenter.lat,
-//     lng: longitude ? Number(longitude) : defaultCenter.lng,
+//     latitude: latitude ? Number(latitude) : defaultCenter.latitude,
+//     longitude: longitude ? Number(longitude) : defaultCenter.longitude,
 //   });
 
 //   const [isLoadingAddress, setIsLoadingAddress] = useState(false);
@@ -61,8 +61,8 @@
 //     if (!mapRef.current) return;
 
 //     mapRef.current.panTo({
-//       lat: position.lat,
-//       lng: position.lng,
+//       lat: position.latitude,
+//       lng: position.longitude,
 //     });
 //   }, [position]);
 
@@ -119,9 +119,9 @@
 //         const formattedAddress =
 //           place.formattedAddress || place.displayName || "";
 
-//         const newPosition = {
-//           lat,
-//           lng,
+//         const newPosition: Position = {
+//           latitude: lat,
+//           longitude: lng,
 //         };
 
 //         setPosition(newPosition);
@@ -215,8 +215,8 @@
 //     const lng = event.latLng.lng();
 
 //     setPosition({
-//       lat,
-//       lng,
+//       latitude: lat,
+//       longitude: lng,
 //     });
 
 //     await getAddressFromCoordinates(lat, lng);
@@ -232,8 +232,8 @@
 //     const lng = event.latLng.lng();
 
 //     setPosition({
-//       lat,
-//       lng,
+//       latitude: lat,
+//       longitude: lng,
 //     });
 
 //     await getAddressFromCoordinates(lat, lng);
@@ -375,8 +375,8 @@
 //               <GoogleMap
 //                 mapContainerStyle={mapContainerStyle}
 //                 center={{
-//                   lat: position.lat,
-//                   lng: position.lng,
+//                   lat: position.latitude,
+//                   lng: position.longitude,
 //                 }}
 //                 zoom={15}
 //                 options={mapOptions}
@@ -386,8 +386,8 @@
 //               >
 //                 <Marker
 //                   position={{
-//                     lat: position.lat,
-//                     lng: position.lng,
+//                     lat: position.latitude,
+//                     lng: position.longitude,
 //                   }}
 //                   draggable
 //                   onDragEnd={handleMarkerDragEnd}

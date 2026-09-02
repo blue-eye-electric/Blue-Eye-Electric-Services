@@ -36,8 +36,7 @@ export function SecondaryButton({
     transition
     hover:-translate-y-0.5
     cursor-pointer
-            ${fullWidth ? "w-full" : ""}
-
+    ${fullWidth ? "w-full" : ""}
     ${className}
   `;
 

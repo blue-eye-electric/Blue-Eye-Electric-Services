@@ -10,6 +10,7 @@ import { getOrders } from "../../../services/orderService";
 // Components
 import OrderCard from "../../../organisms/OrderCard";
 import CompleteJobModal from "../../../organisms/CompleteJobModal";
+import { SecondaryButton } from "../../../atoms";
 
 // Interfaces
 import type { Order } from "../../../types/order";
@@ -71,7 +72,7 @@ const ElectricianHomePage = () => {
           className="
             mx-auto
             flex
-            max-w-7xl
+            max-w-5xl
             items-center
             justify-between
             px-5
@@ -150,30 +151,12 @@ const ElectricianHomePage = () => {
             </div>
 
             {/* Logout */}
-            <button
-              type="button"
+            <SecondaryButton
               onClick={handleLogout}
-              className="
-                flex
-                items-center
-                gap-2
-                rounded-xl
-                border
-                border-slate-200
-                bg-slate-50
-                px-4
-                py-2.5
-                text-sm
-                font-semibold
-                text-ink
-                transition
-                hover:bg-white
-              "
+              icon={<LogOut className="h-4 w-4" />}
             >
-              <LogOut className="h-4 w-4" />
-
               <span className="hidden sm:inline">Logout</span>
-            </button>
+            </SecondaryButton>
           </div>
         </div>
       </header>
@@ -181,7 +164,7 @@ const ElectricianHomePage = () => {
       {/* =========================================
           Main
       ========================================= */}
-      <main className="mx-auto max-w-7xl px-5 py-8 md:px-8 md:py-12">
+      <main className="mx-auto max-w-5xl px-5 py-8 md:px-8 md:py-12">
         {/* Welcome */}
         <section>
           <p
@@ -278,28 +261,9 @@ const ElectricianHomePage = () => {
             </div>
 
             {/* Refresh */}
-            <button
-              type="button"
-              onClick={fetchOrders}
-              disabled={loadingOrders}
-              className="
-                rounded-xl
-                border
-                border-slate-200
-                bg-white
-                px-4
-                py-2
-                text-sm
-                font-semibold
-                text-ink
-                transition
-                hover:bg-slate-50
-                disabled:cursor-not-allowed
-                disabled:opacity-50
-              "
-            >
+            <SecondaryButton onClick={fetchOrders} disabled={loadingOrders}>
               {loadingOrders ? "Loading..." : "Refresh"}
-            </button>
+            </SecondaryButton>
           </div>
 
           {/* Error */}
@@ -316,22 +280,7 @@ const ElectricianHomePage = () => {
             >
               <p className="text-sm font-medium text-red-600">{error}</p>
 
-              <button
-                type="button"
-                onClick={fetchOrders}
-                className="
-                  mt-3
-                  rounded-lg
-                  bg-primary
-                  px-4
-                  py-2
-                  text-sm
-                  font-semibold
-                  text-white
-                "
-              >
-                Try Again
-              </button>
+              <SecondaryButton onClick={fetchOrders}>Try Again</SecondaryButton>
             </div>
           )}
 

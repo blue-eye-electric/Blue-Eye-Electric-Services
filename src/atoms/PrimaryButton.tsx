@@ -37,8 +37,9 @@ export function PrimaryButton({
         hover:-translate-y-0.5
         hover:bg-primary/80
         hover:border-primary
-        disabled:cursor-wait
+        disabled:cursor-auto
         disabled:bg-slate-500
+        disabled:border-slate-500
         ${fullWidth ? "w-full" : ""}
         ${className}
       `}

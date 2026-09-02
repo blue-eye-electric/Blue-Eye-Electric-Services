@@ -15,8 +15,6 @@ import {
 } from "lucide-react";
 
 // Components
-import { Eyebrow } from "../../atoms/Eyebrow";
-import { AccentText } from "../../atoms/Typography";
 import { AppInput } from "../../atoms/AppInput";
 import { AppSelect } from "../../atoms/AppSelect";
 import { AppTextarea } from "../../atoms/AppTextarea";
@@ -24,7 +22,6 @@ import { PrimaryButton } from "../../atoms/PrimaryButton";
 import LocationPicker from "../../molecules/LocationPicker";
 import { SecondaryButton } from "../../atoms";
 import DocumentUpload from "../../atoms/DocumentUpload";
-import SummaryRow from "./SummaryRow";
 import SectionHeader from "./SectionHeader";
 
 // Interfaces
@@ -42,6 +39,8 @@ import { createOrder } from "../../services/orderService";
 
 // Components
 import ServiceTypeCard from "./ServiceTypeCard";
+import BookingSuccess from "./BookingSuccess";
+import BookingSummary from "./BookingSummary";
 
 type BookingModalProps = {
   isOpen: boolean;
@@ -214,7 +213,7 @@ const BookingModal = ({
           flex
           h-full
           w-full
-          max-w-[620px]
+          max-w-3xl
           flex-col
           overflow-hidden
           bg-background
@@ -252,83 +251,10 @@ const BookingModal = ({
           <div className="px-6 py-8 md:px-8 md:py-10">
             {bookingId ? (
               /* ================= SUCCESS ================= */
-              <div className="flex min-h-[600px] flex-col justify-center">
-                <div
-                  className="
-                    mx-auto
-                    mb-6
-                    grid
-                    h-16
-                    w-16
-                    place-items-center
-                    rounded-2xl
-                    bg-lime
-                    text-ink
-                  "
-                >
-                  <CheckCircle2 className="h-8 w-8" />
-                </div>
-
-                <div className="text-center">
-                  <Eyebrow>Booking received</Eyebrow>
-
-                  <h2
-                    className="
-                      mt-4
-                      text-4xl
-                      font-medium
-                      leading-[1]
-                      tracking-[-2px]
-                      text-ink
-                      md:text-5xl
-                    "
-                  >
-                    Your request
-                    <br />
-                    <AccentText>is with us.</AccentText>
-                  </h2>
-
-                  <p
-                    className="
-                      mx-auto
-                      mt-5
-                      max-w-[400px]
-                      text-sm
-                      leading-6
-                      text-muted
-                    "
-                  >
-                    Your booking has been successfully submitted. Our team will
-                    contact you shortly to arrange an electrician.
-                  </p>
-
-                  <div
-                    className="
-                      mx-auto
-                      mt-7
-                      max-w-[360px]
-                      rounded-2xl
-                      border
-                      border-slate-200
-                      bg-white
-                      p-5
-                      text-left
-                    "
-                  >
-                    <p className="text-xs font-medium text-muted">Booking ID</p>
-
-                    <p className="mt-1 text-xl font-bold text-ink">
-                      #{bookingId}
-                    </p>
-                  </div>
-
-                  <div className="mt-7">
-                    <PrimaryButton onClick={handleAnotherBooking}>
-                      Make another booking
-                    </PrimaryButton>
-                  </div>
-                </div>
-              </div>
+              <BookingSuccess
+                bookingId={bookingId}
+                onAnotherBooking={handleAnotherBooking}
+              />
             ) : (
               <>
                 {/* Intro */}
@@ -350,7 +276,7 @@ const BookingModal = ({
                   <p
                     className="
                       mt-4
-                      max-w-[450px]
+                      max-w-xl
                       text-sm
                       leading-6
                       text-muted
@@ -655,8 +581,7 @@ const BookingModal = ({
                                       <span className="min-w-0 flex-1 truncate text-xs text-ink">
                                         {photo.name}
                                       </span>
-                                      <button
-                                        type="button"
+                                      <SecondaryButton
                                         aria-label={`Remove ${photo.name}`}
                                         onClick={() =>
                                           setPhotos((current) =>
@@ -666,10 +591,9 @@ const BookingModal = ({
                                             ),
                                           )
                                         }
-                                        className="text-muted transition hover:text-orange"
                                       >
                                         <Trash2 className="h-4 w-4" />
-                                      </button>
+                                      </SecondaryButton>
                                     </div>
                                   ))}
                                 </div>
@@ -721,8 +645,7 @@ const BookingModal = ({
                                     <span className="min-w-0 flex-1 truncate text-xs text-ink">
                                       {photo.name}
                                     </span>
-                                    <button
-                                      type="button"
+                                    <SecondaryButton
                                       aria-label={`Remove ${photo.name}`}
                                       onClick={() =>
                                         setPhotos((current) =>
@@ -732,10 +655,9 @@ const BookingModal = ({
                                           ),
                                         )
                                       }
-                                      className="text-muted transition hover:text-orange"
                                     >
                                       <Trash2 className="h-4 w-4" />
-                                    </button>
+                                    </SecondaryButton>
                                   </div>
                                 ))}
                               </div>
@@ -745,50 +667,14 @@ const BookingModal = ({
                       )}
 
                       {/* ================= SUMMARY ================= */}
-                      <section>
-                        <SectionHeader
-                          icon={<Clock3 className="h-4 w-4" />}
-                          title="Booking Summary"
-                          description="Review your request before submitting"
-                        />
-
-                        <div
-                          className="
-                            rounded-2xl
-                            border
-                            border-slate-200
-                            bg-white
-                            p-5
-                          "
-                        >
-                          <SummaryRow
-                            label="Customer"
-                            value={form.name || "Not provided"}
-                          />
-
-                          <SummaryRow
-                            label="Service"
-                            value={
-                              form.inspection === "yes"
-                                ? "₹99 Inspection"
-                                : isProjectDiscussion
-                                  ? "Project Discussion"
-                                  : form.service || "Not selected"
-                            }
-                          />
-
-                          <SummaryRow
-                            label="Date"
-                            value={form.date || "Not selected"}
-                          />
-
-                          <SummaryRow
-                            label="Time"
-                            value={form.time || "Not selected"}
-                            last
-                          />
-                        </div>
-                      </section>
+                      <BookingSummary
+                        name={form.name}
+                        inspection={form.inspection}
+                        service={form.service}
+                        date={form.date}
+                        time={form.time}
+                        isProjectDiscussion={isProjectDiscussion}
+                      />
 
                       {/* Error */}
                       {error && (

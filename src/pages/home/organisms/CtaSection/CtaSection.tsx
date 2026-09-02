@@ -8,7 +8,7 @@ type CtaSectionProps = {
 
 const CTASection = ({ onBook }: CtaSectionProps) => {
   return (
-    <section className="bg-muted px-[6vw] py-20 md:py-24">
+    <section className="bg-primary/70 px-[6vw] py-20 md:py-24">
       <div className="mx-auto max-w-5xl">
         <div className="grid gap-10 md:grid-cols-[1fr_auto] md:items-center">
           <div>
