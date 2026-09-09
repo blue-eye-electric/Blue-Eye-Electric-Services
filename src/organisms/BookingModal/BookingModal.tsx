@@ -39,7 +39,6 @@ import { createOrder } from "../../services/orderService";
 import ServiceTypeCard from "./ServiceTypeCard";
 import BookingSuccess from "./BookingSuccess";
 import BookingSummary from "./BookingSummary";
-import { showSnackbar } from "../../atoms/AppSnackBar";
 
 type BookingModalProps = {
   isOpen: boolean;

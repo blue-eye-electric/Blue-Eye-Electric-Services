@@ -4,7 +4,7 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 
 import { Loader2, MapPin, Search } from "lucide-react";
 
-import { PrimaryButton, SecondaryButton } from "../../atoms";
+import { PrimaryButton } from "../../atoms";
 
 import type { LocationPickerProps, Position } from "../../types/location";
 
