@@ -39,6 +39,7 @@ import { createOrder } from "../../services/orderService";
 import ServiceTypeCard from "./ServiceTypeCard";
 import BookingSuccess from "./BookingSuccess";
 import BookingSummary from "./BookingSummary";
+import { showSnackbar } from "../../atoms/AppSnackBar";
 
 type BookingModalProps = {
   isOpen: boolean;
@@ -155,8 +156,6 @@ const BookingModal = ({
 
       setBookingId(result.orderId);
     } catch (error) {
-      console.error("Booking submission error:", error);
-
       setError(
         error instanceof Error
           ? error.message

@@ -21,12 +21,12 @@ const CTASection = ({ onBook }: CtaSectionProps) => {
             </h2>
 
             <p className="mt-4 text-on-primary">
-              Reliable electrical service for homes and businesses in
-              Lakhisarai.
+              Reliable electrical service for homes and businesses in Lakhisarai
+              & Kankarbagh.
             </p>
 
             <div className="mt-7 space-y-1 text-on-primary">
-              <p>Service Area: Lakhisarai</p>
+              <p>Service Area: Lakhisarai & Kankarbagh</p>
               <p>Operating Hours: 8:00 AM - 8:00 PM</p>
             </div>
           </div>

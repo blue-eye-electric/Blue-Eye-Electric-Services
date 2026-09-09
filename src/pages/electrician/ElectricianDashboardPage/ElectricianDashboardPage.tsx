@@ -11,6 +11,7 @@ import { getOrders } from "../../../services/orderService";
 import OrderCard from "../../../organisms/OrderCard";
 import CompleteJobModal from "../../../organisms/CompleteJobModal";
 import { SecondaryButton } from "../../../atoms";
+import { showSnackbar } from "../../../atoms/AppSnackBar";
 
 // Interfaces
 import type { Order } from "../../../types/order";
@@ -46,7 +47,11 @@ const ElectricianHomePage = () => {
 
       setOrders(result.orders);
     } catch (error) {
-      console.error("Fetch orders error:", error);
+      showSnackbar.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch assigned jobs",
+      );
 
       setError(
         error instanceof Error

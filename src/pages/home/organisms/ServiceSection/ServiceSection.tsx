@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "lucide-react";
 import { PrimaryButton } from "../../../../atoms";
 import { Eyebrow } from "../../../../atoms/Eyebrow";
 import { AccentText, SectionHeading } from "../../../../atoms/Typography";
@@ -74,7 +75,7 @@ const ServiceSection = ({ onBook }: ServiceSectionProps) => {
         ))}
       </div>
 
-      <div className="mt-8 flex flex-col md:flex-row items-center justify-between gap-6 px-7 py-6 ">
+      <div className="mt-8 flex flex-col md:flex-row md:items-center justify-between gap-6 py-6 ">
         <div>
           <p className="mb-1 text-3xl font-bold text-primary">
             Not sure what&apos;s wrong?
@@ -91,7 +92,7 @@ const ServiceSection = ({ onBook }: ServiceSectionProps) => {
           onClick={() => onBook(undefined, true)}
           className="text-nowrap"
         >
-          Book inspection ↗
+          Book inspection <ArrowUpRight className="ml-2 h-6 w-6" />
         </PrimaryButton>
       </div>
     </section>

@@ -51,7 +51,7 @@ const UspBar = () => {
       "
         >
           <span className="mr-2 text-lg">✦</span>
-          Lakhisarai & Expanding to Kankarbagh, Patna Soon
+          Lakhisarai & Kankarbagh
         </div>
       </div>
     </section>

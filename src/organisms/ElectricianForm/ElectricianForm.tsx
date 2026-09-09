@@ -103,8 +103,6 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
           status: data.status || "pending",
         });
       } catch (error) {
-        console.error(error);
-
         showSnackbar.error(
           error instanceof Error
             ? error.message
@@ -254,8 +252,6 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
         showSnackbar.success("Electrician updated successfully.");
         navigate("/admin/electricians", { replace: true });
       } catch (error) {
-        console.error(error);
-
         showSnackbar.error(
           error instanceof Error
             ? error.message

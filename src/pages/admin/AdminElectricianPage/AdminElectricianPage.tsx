@@ -26,6 +26,7 @@ import type {
   Electrician,
   ElectricianStatus,
 } from "../../../types/electrician";
+import { showSnackbar } from "../../../atoms/AppSnackBar";
 
 const AdminElectricianPage = () => {
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ const AdminElectricianPage = () => {
 
       setElectricians(data);
     } catch (error) {
-      console.error("Failed to fetch electricians:", error);
+      showSnackbar.error("Failed to load electricians." + error);
       setError("Failed to load electricians.");
     } finally {
       setLoading(false);
@@ -68,9 +69,10 @@ const AdminElectricianPage = () => {
         ),
       );
     } catch (error) {
-      console.error("Failed to update status:", error);
-
-      alert("Failed to update electrician status.");
+      showSnackbar.error(
+        "Failed to update status:" +
+          (error instanceof Error ? error.message : ""),
+      );
     } finally {
       setUpdatingId(null);
     }

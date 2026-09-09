@@ -1,3 +1,5 @@
+import { Heart } from "lucide-react";
+
 const Footer = () => {
   return (
     <footer className="px-2 tracking-[0.3px]">
@@ -6,15 +8,18 @@ const Footer = () => {
           <span>© 2026 Blue Eye Electric Service</span>
         </div>
 
-        <a
-          href="https://spsoftsolution.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-md hover:text-primary"
-        >
-          Made with <span className="text-primary">♥</span> by{" "}
-          <span className="font-bold underline">SP Soft Solution</span>
-        </a>
+        <div className="flex flex-col items-center gap-2">
+          <a
+            href="https://spsoftsolution.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-md hover:text-primary"
+          >
+            Made with
+            <Heart className="h-4 w-4 text-primary" fill="currentColor" />
+            by <span className="font-bold underline">SP Soft Solution</span>
+          </a>
+        </div>
       </div>
     </footer>
   );

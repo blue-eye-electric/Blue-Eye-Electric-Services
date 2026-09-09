@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react";
+import { ArrowUpRight, type LucideIcon } from "lucide-react";
 import { SecondaryButton } from "../../../../../../atoms";
 
 type ServiceCardProps = {
@@ -44,7 +44,7 @@ const ServiceCard = ({
 
       <SecondaryButton className="mt-auto w-fit bg-on-primary text-primary">
         Book this service
-        <span className="ml-2 text-base text-orange">↗</span>
+        <ArrowUpRight className="ml-2 h-6 w-6" />
       </SecondaryButton>
     </article>
   );

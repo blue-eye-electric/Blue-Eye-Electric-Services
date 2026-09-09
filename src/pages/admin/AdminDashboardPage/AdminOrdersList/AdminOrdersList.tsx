@@ -12,6 +12,7 @@ import { assignElectrician } from "../../../../services/orderService";
 import AssignElectricianModal from "../AssignElectricianModal";
 import OrderCard from "../../../../organisms/OrderCard/OrderCard";
 import CompleteJobModal from "../../../../organisms/CompleteJobModal";
+import { showSnackbar } from "../../../../atoms/AppSnackBar";
 
 // Interfaces
 import type { Order } from "../../../../types/order";
@@ -98,7 +99,9 @@ const AdminOrdersList = ({
 
       setElectricians(result);
     } catch (error) {
-      console.error("Failed to fetch electricians:", error);
+      showSnackbar.error(
+        error instanceof Error ? error.message : "Failed to fetch electricians",
+      );
     }
   };
 
@@ -132,7 +135,10 @@ const AdminOrdersList = ({
 
       setSelectedOrder(null);
     } catch (error) {
-      console.error("Assign electrician error:", error);
+      showSnackbar.error(
+        "Failed to assign electrician:" +
+          (error instanceof Error ? error.message : ""),
+      );
 
       throw error;
     } finally {

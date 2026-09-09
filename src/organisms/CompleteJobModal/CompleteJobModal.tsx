@@ -9,6 +9,7 @@ import { completeOrder } from "../../services/orderService";
 
 // Components
 import { AppSelect, PrimaryButton, SecondaryButton } from "../../atoms";
+import { showSnackbar } from "../../atoms/AppSnackBar";
 
 // Interfaces
 import type { Order, PaymentDetail } from "../../types/order";
@@ -107,12 +108,11 @@ const CompleteJobModal = ({
 
       onCompleted();
     } catch (error) {
-      console.error("Mark complete error:", error);
-
-      setPaymentError(
-        error instanceof Error
-          ? error.message
-          : "Failed to mark job as completed",
+      showSnackbar.error(
+        "Unable to mark job as completed. Please try again." +
+          (error instanceof Error
+            ? error.message
+            : "Failed to mark job as completed"),
       );
     } finally {
       setCompleteLoading(false);

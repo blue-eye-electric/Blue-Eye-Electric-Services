@@ -6,22 +6,20 @@ const ElectricianSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="px-5 py-8 md:py-10">
+    <section className="px-5 py-8">
       <div
         className="
           mx-auto
           flex
+          flex-col
+          md:flex-row
           max-w-5xl
-          items-center
+          md:items-center
           justify-between
           gap-6
           rounded-2xl
-          px-6
           py-5
           text-primary
-          max-sm:flex-col
-          max-sm:items-start
-          md:px-8
         "
       >
         <div className="flex items-center gap-4">
