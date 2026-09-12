@@ -60,7 +60,88 @@
 
 
 
-// Google
+// // Google
+// import type { ReverseGeocodeResult } from "../types/location";
+
+// export type PlaceSearchResult = {
+//   display_name: string;
+//   lat: string;
+//   lon: string;
+//   place_id: string;
+// };
+
+// /**
+//  * Google reverse geocoding
+//  * Coordinates → Address
+//  */
+// export const reverseGeocode = async (
+//   latitude: number,
+//   longitude: number,
+// ): Promise<ReverseGeocodeResult> => {
+//   if (!window.google?.maps) {
+//     throw new Error("Google Maps API is not loaded");
+//   }
+
+//   const geocoder = new google.maps.Geocoder();
+
+//   const response = await geocoder.geocode({
+//     location: {
+//       lat: latitude,
+//       lng: longitude,
+//     },
+//   });
+
+//   const result = response.results?.[0];
+
+//   return {
+//     address: result?.formatted_address ?? "",
+//   };
+// };
+
+// /**
+//  * Google Places Autocomplete
+//  * Search text → Place suggestions
+//  */
+// export const searchPlaces = async (
+//   query: string,
+// ): Promise<PlaceSearchResult[]> => {
+//   if (!query.trim()) return [];
+
+//   if (!window.google?.maps?.places) {
+//     throw new Error("Google Places API is not loaded");
+//   }
+
+//   const { suggestions } =
+//     await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(
+//       {
+//         input: query.trim(),
+
+//         // Restrict results to India
+//         includedRegionCodes: ["in"],
+//       },
+//     );
+
+//   return suggestions
+//     .filter((item) => item.placePrediction)
+//     .map((item) => {
+//       const prediction = item.placePrediction!;
+
+//       return {
+//         display_name:
+//           prediction.text?.text ??
+//           prediction.mainText?.text ??
+//           "",
+
+//         lat: "",
+//         lon: "",
+
+//         place_id: prediction.placeId,
+//       };
+//     });
+// };
+
+
+// Open Street Map
 import type { ReverseGeocodeResult } from "../types/location";
 
 export type PlaceSearchResult = {
@@ -70,72 +151,106 @@ export type PlaceSearchResult = {
   place_id: string;
 };
 
+const NOMINATIM_BASE_URL =
+  "https://nominatim.openstreetmap.org";
+
 /**
- * Google reverse geocoding
+ * Reverse Geocoding
  * Coordinates → Address
  */
 export const reverseGeocode = async (
   latitude: number,
   longitude: number,
 ): Promise<ReverseGeocodeResult> => {
-  if (!window.google?.maps) {
-    throw new Error("Google Maps API is not loaded");
-  }
-
-  const geocoder = new google.maps.Geocoder();
-
-  const response = await geocoder.geocode({
-    location: {
-      lat: latitude,
-      lng: longitude,
-    },
+  const params = new URLSearchParams({
+    format: "jsonv2",
+    lat: String(latitude),
+    lon: String(longitude),
+    addressdetails: "1",
   });
 
-  const result = response.results?.[0];
+  const response = await fetch(
+    `${NOMINATIM_BASE_URL}/reverse?${params.toString()}`,
+    {
+      headers: {
+        Accept: "application/json",
+      },
+    },
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+
+    console.error(
+      "Reverse geocoding error:",
+      response.status,
+      errorText,
+    );
+
+    throw new Error(
+      `Reverse geocoding failed with status ${response.status}`,
+    );
+  }
+
+  const data = await response.json();
 
   return {
-    address: result?.formatted_address ?? "",
+    address: data.display_name ?? "",
   };
 };
 
 /**
- * Google Places Autocomplete
+ * Place Search
  * Search text → Place suggestions
  */
 export const searchPlaces = async (
   query: string,
 ): Promise<PlaceSearchResult[]> => {
-  if (!query.trim()) return [];
+  const trimmedQuery = query.trim();
 
-  if (!window.google?.maps?.places) {
-    throw new Error("Google Places API is not loaded");
+  if (!trimmedQuery) {
+    return [];
   }
 
-  const { suggestions } =
-    await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(
-      {
-        input: query.trim(),
+  const params = new URLSearchParams({
+    format: "jsonv2",
+    q: trimmedQuery,
+    countrycodes: "in",
+    addressdetails: "1",
+    limit: "8",
+  });
 
-        // Restrict results to India
-        includedRegionCodes: ["in"],
+  const response = await fetch(
+    `${NOMINATIM_BASE_URL}/search?${params.toString()}`,
+    {
+      headers: {
+        Accept: "application/json",
       },
+    },
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+
+    console.error(
+      "Place search error:",
+      response.status,
+      errorText,
     );
 
-  return suggestions
-    .filter((item) => item.placePrediction)
-    .map((item) => {
-      const prediction = item.placePrediction!;
+    throw new Error(
+      `Place search failed with status ${response.status}`,
+    );
+  }
 
-      return {
-        display_name:
-          prediction.text?.text ??
-          prediction.mainText?.text ??
-          "",
+  const data = await response.json();
 
-        lat: "",
-        lon: "",
-
-        place_id: prediction.placeId,
-      };
-    });
+  return data.map(
+    (item: PlaceSearchResult) => ({
+      display_name: item.display_name,
+      lat: item.lat,
+      lon: item.lon,
+      place_id: item.place_id,
+    }),
+  );
 };

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 
-import { Loader2, MapPin, Search } from "lucide-react";
+import { Loader2, MapPin, Search } from "lucide-react"; 
 
 import { PrimaryButton } from "../../atoms";
 
