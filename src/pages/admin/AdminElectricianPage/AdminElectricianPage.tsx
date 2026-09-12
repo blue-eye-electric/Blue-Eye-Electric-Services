@@ -304,6 +304,10 @@ const AdminElectricianPage = () => {
                     </th>
 
                     <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-muted">
+                      Service Area
+                    </th>
+
+                    <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-muted">
                       Status
                     </th>
                   </tr>
@@ -357,6 +361,13 @@ const AdminElectricianPage = () => {
                       <td className="px-5 py-4">
                         <p className="text-sm text-ink">
                           {electrician.mobile_number}
+                        </p>
+                      </td>
+
+                      {/* Service Area */}
+                      <td className="px-5 py-4">
+                        <p className="text-sm text-ink">
+                          {electrician.service_area}
                         </p>
                       </td>
 

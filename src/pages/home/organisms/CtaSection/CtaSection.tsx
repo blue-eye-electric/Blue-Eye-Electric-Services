@@ -2,11 +2,28 @@ import { MessageCircle, ArrowUpRight } from "lucide-react";
 
 import { PrimaryButton, SecondaryButton } from "../../../../atoms";
 
+import { useState, useEffect } from "react";
+import type { ServiceArea } from "../../../../types/serviceArea";
+import { getServiceAreas } from "../../../../services/serviceAreaService";
+
 type CtaSectionProps = {
   onBook: () => void;
 };
 
 const CTASection = ({ onBook }: CtaSectionProps) => {
+  const [serviceAreas, setServiceAreas] = useState<ServiceArea[]>([]);
+
+  useEffect(() => {
+    const loadServiceAreas = async () => {
+      try {
+        setServiceAreas(await getServiceAreas());
+      } catch (error) {}
+    };
+
+    loadServiceAreas();
+  }, []);
+
+  console.log(serviceAreas);
   return (
     <section className="bg-primary/70 px-[6vw] py-20 md:py-24">
       <div className="mx-auto max-w-5xl">
@@ -21,12 +38,18 @@ const CTASection = ({ onBook }: CtaSectionProps) => {
             </h2>
 
             <p className="mt-4 text-on-primary">
-              Reliable electrical service for homes and businesses in Lakhisarai
-              & Kankarbagh.
+              Reliable electrical service for homes and businesses.
             </p>
 
             <div className="mt-7 space-y-1 text-on-primary">
-              <p>Service Area: Lakhisarai & Kankarbagh</p>
+              {serviceAreas.length > 0 && (
+                <p>
+                  Service Area :{" "}
+                  <span className="font-bold">
+                    {serviceAreas.map((area) => area.area_name).join(", ")}
+                  </span>
+                </p>
+              )}
               <p>Operating Hours: 8:00 AM - 8:00 PM</p>
             </div>
           </div>

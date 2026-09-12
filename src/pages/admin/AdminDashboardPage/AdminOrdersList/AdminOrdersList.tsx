@@ -5,7 +5,7 @@ import { Zap } from "lucide-react";
 
 // Services
 import { getOrders } from "../../../../services/orderService";
-import { getElectricians } from "../../../../services/electricianService";
+import { getElectricianForOrder } from "../../../../services/electricianService";
 import { assignElectrician } from "../../../../services/orderService";
 
 // Components
@@ -95,7 +95,7 @@ const AdminOrdersList = ({
 
   const fetchElectricians = async () => {
     try {
-      const result = await getElectricians("approved");
+      const result = await getElectricianForOrder(selectedOrder?.id || "");
 
       setElectricians(result);
     } catch (error) {
@@ -107,8 +107,13 @@ const AdminOrdersList = ({
 
   useEffect(() => {
     fetchOrders(1, false);
-    fetchElectricians();
   }, []);
+
+  useEffect(() => {
+    if (selectedOrder) {
+      fetchElectricians();
+    }
+  }, [selectedOrder]);
 
   const handleAssign = async (electricianId: string) => {
     if (!selectedOrder) return;

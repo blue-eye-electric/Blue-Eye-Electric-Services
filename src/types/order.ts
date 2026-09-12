@@ -10,6 +10,7 @@ export interface Order {
   customer_name: string;
   customer_phone: string;
   customer_address: string;
+  service_area?: string | null;
   latitude: number | null;
   longitude: number | null;
   service_date: string;

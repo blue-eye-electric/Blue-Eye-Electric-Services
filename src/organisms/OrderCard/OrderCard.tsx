@@ -143,11 +143,17 @@ const OrderCard = ({
               </p>
             </div>
           </div>
+          {order.service_area && (
+            <p className="mt-2 text-sm text-muted">
+              Service area:{" "}
+              <span className="font-medium text-ink">{order.service_area}</span>
+            </p>
+          )}
         </div>
 
         {/* Service */}
         <div>
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted">
             Service
           </p>
 
@@ -164,7 +170,7 @@ const OrderCard = ({
 
         {/* Schedule */}
         <div>
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted">
             Schedule
           </p>
 
@@ -198,7 +204,6 @@ const OrderCard = ({
             </p>
             <ExternalLink className="h-4 w-4 text-primary" />
           </div>
-
           <p className="flex gap-2 text-sm text-ink">
             <MapPin className=" h-6 w-6 shrink-0 text-primary" />
 
@@ -304,6 +309,11 @@ const OrderCard = ({
               <p className="mt-1 flex items-center gap-1 text-xs text-muted">
                 <Phone className="h-3 w-3" />
                 {assignedElectrician.mobile_number}
+              </p>
+
+              <p className="mt-1 flex items-center gap-1 text-xs text-muted">
+                <MapPin className="h-3 w-3" />
+                {assignedElectrician.service_area}
               </p>
             </div>
           </div>

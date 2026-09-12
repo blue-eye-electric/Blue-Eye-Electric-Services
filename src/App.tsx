@@ -29,6 +29,9 @@ const AdminElectricianDetailPage = lazy(
   () =>
     import("./pages/admin/AdminElectricianDetailPage/AdminElectricianDetailPage"),
 );
+const AdminServiceAreaPage = lazy(
+  () => import("./pages/admin/AdminServiceAreaPage"),
+);
 
 function App() {
   return (
@@ -99,6 +102,14 @@ function App() {
               element={
                 <ProtectedRoute role="admin">
                   <AdminElectricianDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/serviceArea"
+              element={
+                <ProtectedRoute role="admin">
+                  <AdminServiceAreaPage />
                 </ProtectedRoute>
               }
             />

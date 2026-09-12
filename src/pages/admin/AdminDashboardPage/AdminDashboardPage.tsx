@@ -88,6 +88,13 @@ const AdminDashboardPage = () => {
             >
               See Electricians
             </SecondaryButton>
+
+            <SecondaryButton
+              icon={<ArrowRight className="w-4 h-4" />}
+              onClick={() => navigate("/admin/serviceArea")}
+            >
+              Manage Service Areas
+            </SecondaryButton>
           </div>
         </div>
 

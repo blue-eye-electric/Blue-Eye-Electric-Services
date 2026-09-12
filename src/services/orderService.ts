@@ -15,6 +15,7 @@ export const createOrder = async (
   formData.append("customerName", data.customerName);
   formData.append("customerPhone", data.customerPhone);
   formData.append("customerAddress", data.customerAddress);
+  formData.append("serviceArea", data.serviceArea);
   formData.append("latitude", data.latitude);
   formData.append("longitude", data.longitude);
   formData.append("serviceDate", data.serviceDate);

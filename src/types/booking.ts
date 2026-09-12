@@ -5,6 +5,7 @@ export type BookingForm = {
   name: string;
   phone: string;
   address: string;
+  serviceArea: string;
   mapAddress: string;
   latitude: string;
   longitude: string;
@@ -19,6 +20,7 @@ export type BookingPayload = {
   customerName: string;
   customerPhone: string;
   customerAddress: string;
+  serviceArea: string;
   latitude: string;
   longitude: string;
   serviceDate: string;
@@ -39,6 +41,7 @@ export const initialBookingForm: BookingForm = {
   name: "",
   phone: "",
   address: "",
+  serviceArea: "",
   mapAddress: "",
   latitude: "",
   longitude: "",

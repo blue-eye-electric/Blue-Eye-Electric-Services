@@ -1,11 +1,11 @@
 export const ID_TYPES = [
   {
-    value: "aadhaar_Card",
-    label: "Aadhaar Card",
+    value: "aadhar_card",
+    label: "Aadhar Card",
   },
   {
     value: "driving_license",
-    label: "Driving Licence",
+    label: "Driving License",
   },
   {
     value: "voting_card",

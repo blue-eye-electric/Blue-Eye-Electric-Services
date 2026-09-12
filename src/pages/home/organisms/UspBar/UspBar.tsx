@@ -35,14 +35,14 @@ const UspBar = () => {
         flex-col
         "
       >
-        <div className="flex w-full flex-col gap-2 md:flex-row md:gap-6">
+        <div className="flex w-full flex-col gap-2 md:flex-row md:gap-6 justify-between md:items-center">
           <StatItem value="₹99" lines={["Inspection at Just ₹99"]} />
 
           <StatItem value="14" lines={["day service guarantee"]} />
 
           <StatItem value="2h" lines={["electrician response time"]} />
         </div>
-        <div
+        {/* <div
           className="
         md:ml-auto
         text-xs
@@ -52,7 +52,7 @@ const UspBar = () => {
         >
           <span className="mr-2 text-lg">✦</span>
           Lakhisarai & Kankarbagh
-        </div>
+        </div> */}
       </div>
     </section>
   );

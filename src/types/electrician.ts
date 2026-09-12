@@ -4,6 +4,7 @@ export interface Electrician {
   email: string;
   mobile_number: string;
   current_address: string;
+  service_area: string;
   latitude: number;
   longitude: number;
   profile_photo_url: string | null;
@@ -27,6 +28,7 @@ export interface CreateElectricianRequest {
   mobileNumber: string;
   password: string;
   currentAddress: string;
+  serviceArea: string;
   latitude: number;
   longitude: number;
   profilePhoto: File;
@@ -37,7 +39,8 @@ export interface CreateElectricianRequest {
 
 export interface CreateElectricianResponse {
   success: boolean;
-  electricianId: string;
+  message: string;
+  electrician: Electrician;
 }
 
 export interface GetElectriciansResponse {

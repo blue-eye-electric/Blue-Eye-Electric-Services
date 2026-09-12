@@ -24,6 +24,7 @@ export const createElectrician = async (
   formData.append('mobileNumber', data.mobileNumber);
   formData.append('password', data.password);
   formData.append('currentAddress', data.currentAddress);
+  formData.append('serviceArea', data.serviceArea);
   formData.append('latitude', String(data.latitude));
   formData.append('longitude', String(data.longitude));
   formData.append('validIdNumber', data.validIdNumber);
@@ -101,6 +102,39 @@ export const getElectricians = async (
   return result.electricians;
 };
 
+export const getElectricianForOrder = async (
+  orderId: string,
+): Promise<Electrician[]> => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Authentication token not found");
+  }
+
+  const response = await fetch(
+    `${baseUrl}/api/electricians/order/${encodeURIComponent(orderId)}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  const result: GetElectriciansResponse & {
+    message?: string;
+  } = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      result.message || "Failed to fetch electricians for order",
+    );
+  }
+
+  return result.electricians;
+};
+
 export const getElectricianById = async (
   id: string,
 ): Promise<Electrician> => {
@@ -122,12 +156,12 @@ export const updateElectrician = async (
   data: {
     name?: string;
     current_address?: string;
+    service_area?: string;
     latitude?: number;
     longitude?: number;
     valid_id_number?: string;
     valid_id_type?: string;
     status?: string;
-    password?: string;
     profilePhoto?: File;
     validId?: File;
   },
@@ -148,6 +182,13 @@ export const updateElectrician = async (
     formData.append(
       "current_address",
       data.current_address,
+    );
+  }
+
+  if (data.service_area !== undefined) {
+    formData.append(
+      "service_area",
+      data.service_area,
     );
   }
 
@@ -183,13 +224,6 @@ export const updateElectrician = async (
     formData.append(
       "status",
       data.status,
-    );
-  }
-
-  if (data.password) {
-    formData.append(
-      "password",
-      data.password,
     );
   }
 

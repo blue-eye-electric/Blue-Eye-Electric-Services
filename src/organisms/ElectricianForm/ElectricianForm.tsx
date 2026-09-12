@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+// Icons
 import {
   CheckCircle2,
   FileText,
@@ -6,8 +9,8 @@ import {
   UserRound,
   LockKeyhole,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
 
+// Components
 import {
   AppInput,
   AppTextarea,
@@ -15,28 +18,35 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from "../../atoms";
-
 import DocumentUpload from "../../atoms/DocumentUpload";
 import LocationPicker from "../../molecules/LocationPicker";
+import { showSnackbar } from "../../atoms/AppSnackBar";
+import PageLoader from "../../atoms/PageLoader";
 
+// Services
 import {
   createElectrician,
   getElectricianById,
   updateElectrician,
 } from "../../services/electricianService";
+import { getServiceAreas } from "../../services/serviceAreaService";
 
+// Constants
 import { ID_TYPES } from "../../constants/idTypeConstants";
-import { showSnackbar } from "../../atoms/AppSnackBar";
-import { isValidEmail } from "../../helpers/validEmail";
-import PageLoader from "../../atoms/PageLoader";
 import {
   allowedDocTypes,
   allowedImageTypes,
 } from "../../constants/allowedDocTypes";
+
+// Helpers
+import { isValidEmail } from "../../helpers/validEmail";
+
+// Interfaces
 import type {
   CreateElectricianRequest,
   Electrician,
 } from "../../types/electrician";
+import type { ServiceArea } from "../../types/serviceArea";
 
 type ElectricianFormMode = "register" | "admin";
 
@@ -51,12 +61,14 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
   const isAdmin = mode === "admin";
 
   const [electrician, setElectrician] = useState<Electrician | null>(null);
+  const [serviceAreas, setServiceAreas] = useState<ServiceArea[]>([]);
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     mobileNumber: "",
     address: "",
+    serviceArea: "",
     mapAddress: "",
     latitude: "",
     longitude: "",
@@ -73,6 +85,22 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
   const [isLoading, setIsLoading] = useState(isAdmin);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const loadServiceAreas = async () => {
+      try {
+        setServiceAreas(await getServiceAreas());
+      } catch (error) {
+        showSnackbar.error(
+          error instanceof Error
+            ? error.message
+            : "Failed to load service areas.",
+        );
+      }
+    };
+
+    loadServiceAreas();
+  }, []);
 
   /*
    * ADMIN:
@@ -94,6 +122,7 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
           email: data.email || "",
           mobileNumber: data.mobile_number || "",
           address: data.current_address || "",
+          serviceArea: data.service_area || "",
           mapAddress: data.current_address || "",
           latitude: data.latitude !== null ? String(data.latitude) : "",
           longitude: data.longitude !== null ? String(data.longitude) : "",
@@ -219,19 +248,13 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
         const updateData: Record<string, unknown> = {
           name: formData.name.trim(),
           current_address: (formData.address || formData.mapAddress).trim(),
+          service_area: formData.serviceArea.trim(),
           latitude: Number(formData.latitude),
           longitude: Number(formData.longitude),
           valid_id_number: formData.validIdNumber.trim(),
           valid_id_type: formData.validIdType,
           status: formData.status,
         };
-
-        /*
-         * Only update password if admin entered one.
-         */
-        if (formData.password.trim()) {
-          updateData.password = formData.password.trim();
-        }
 
         /*
          * Only send profile photo if replaced.
@@ -300,6 +323,7 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
         email: formData.email.trim(),
         mobileNumber: formData.mobileNumber.trim(),
         currentAddress: (formData.address || formData.mapAddress).trim(),
+        serviceArea: formData.serviceArea.trim(),
         latitude: Number(formData.latitude),
         longitude: Number(formData.longitude),
         profilePhoto,
@@ -552,6 +576,34 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
                   rows={3}
                   required
                 />
+
+                <AppSelect
+                  label="Service Area"
+                  name="serviceArea"
+                  value={formData.serviceArea}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" disabled>
+                    Select service area
+                  </option>
+
+                  {formData.serviceArea &&
+                    !serviceAreas.some(
+                      (serviceArea) =>
+                        serviceArea.area_name === formData.serviceArea,
+                    ) && (
+                      <option value={formData.serviceArea}>
+                        {formData.serviceArea}
+                      </option>
+                    )}
+
+                  {serviceAreas.map((serviceArea) => (
+                    <option key={serviceArea.id} value={serviceArea.area_name}>
+                      {serviceArea.area_name}
+                    </option>
+                  ))}
+                </AppSelect>
 
                 <LocationPicker
                   address={formData.mapAddress}

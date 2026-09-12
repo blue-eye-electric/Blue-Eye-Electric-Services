@@ -28,12 +28,14 @@ import {
   type BookingForm,
   type BookingMode,
 } from "../../types/booking";
+import type { ServiceArea } from "../../types/serviceArea";
 
 // Constants
 import { serviceOptions, timeOptions } from "../../constants/services";
 
 // Services
 import { createOrder } from "../../services/orderService";
+import { getServiceAreas } from "../../services/serviceAreaService";
 
 // Components
 import ServiceTypeCard from "./ServiceTypeCard";
@@ -63,6 +65,7 @@ const BookingModal = ({
   ].join("-");
 
   const [form, setForm] = useState<BookingForm>(initialBookingForm);
+  const [serviceAreas, setServiceAreas] = useState<ServiceArea[]>([]);
   const [bookingMode, setBookingMode] = useState<BookingMode>(bookingType);
   const [hasSelectedBookingMode, setHasSelectedBookingMode] = useState(false);
 
@@ -84,6 +87,24 @@ const BookingModal = ({
       inspection: inspection ? "yes" : "no",
     }));
   }, [bookingType, inspection, isOpen, service]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const loadServiceAreas = async () => {
+      try {
+        setServiceAreas(await getServiceAreas());
+      } catch (error) {
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Failed to load service areas.",
+        );
+      }
+    };
+
+    loadServiceAreas();
+  }, [isOpen]);
 
   if (!isOpen) {
     return null;
@@ -139,6 +160,7 @@ const BookingModal = ({
         // Map coordinates
         latitude: form.latitude,
         longitude: form.longitude,
+        serviceArea: form.serviceArea,
         serviceDate: form.date,
         serviceTime: form.time,
         inspection: form.inspection === "yes",
@@ -386,6 +408,26 @@ const BookingModal = ({
                             }
                             placeholder="House / street / landmark"
                           />
+
+                          <AppSelect
+                            label="Service Area"
+                            required
+                            value={form.serviceArea}
+                            onChange={(event) =>
+                              updateForm("serviceArea", event.target.value)
+                            }
+                          >
+                            <option value="">Select a service area</option>
+
+                            {serviceAreas.map((serviceArea) => (
+                              <option
+                                key={serviceArea.id}
+                                value={serviceArea.area_name}
+                              >
+                                {serviceArea.area_name}
+                              </option>
+                            ))}
+                          </AppSelect>
 
                           <LocationPicker
                             address={form.mapAddress}
