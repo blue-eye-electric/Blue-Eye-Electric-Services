@@ -28,12 +28,13 @@ export const createElectrician = async (
   formData.append('latitude', String(data.latitude));
   formData.append('longitude', String(data.longitude));
   formData.append('validIdNumber', data.validIdNumber);
-  formData.append('validIdType', data.validIdType);
 
   // Profile photo
   formData.append("profilePhoto", data.profilePhoto);
   // Actual document file
   formData.append('validId', data.validId);
+  formData.append('addressProof', data.addressProof);
+  formData.append('bankAccountProof', data.bankAccountProof);
 
   const response = await fetch(
     `${baseUrl}/api/electricians`,
@@ -164,6 +165,8 @@ export const updateElectrician = async (
     status?: string;
     profilePhoto?: File;
     validId?: File;
+    addressProof?: File;
+    bankAccountProof?: File;
   },
 ): Promise<Electrician> => {
   const token = localStorage.getItem("token");
@@ -241,6 +244,14 @@ export const updateElectrician = async (
       "validId",
       data.validId,
     );
+  }
+
+  if (data.addressProof) {
+    formData.append("addressProof", data.addressProof);
+  }
+
+  if (data.bankAccountProof) {
+    formData.append("bankAccountProof", data.bankAccountProof);
   }
 
   const response = await fetch(

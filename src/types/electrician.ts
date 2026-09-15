@@ -9,6 +9,8 @@ export interface Electrician {
   longitude: number;
   profile_photo_url: string | null;
   valid_id_url: string | null;
+  address_proof_url: string | null;
+  bank_account_proof_url: string | null;
   valid_id_number: string;
   valid_id_type: string;
   status: string;
@@ -33,8 +35,9 @@ export interface CreateElectricianRequest {
   longitude: number;
   profilePhoto: File;
   validId: File;
+  addressProof: File;
+  bankAccountProof: File;
   validIdNumber: string;
-  validIdType: string;
 }
 
 export interface CreateElectricianResponse {

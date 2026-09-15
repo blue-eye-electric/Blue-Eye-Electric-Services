@@ -32,7 +32,6 @@ import {
 import { getServiceAreas } from "../../services/serviceAreaService";
 
 // Constants
-import { ID_TYPES } from "../../constants/idTypeConstants";
 import {
   allowedDocTypes,
   allowedImageTypes,
@@ -47,6 +46,7 @@ import type {
   Electrician,
 } from "../../types/electrician";
 import type { ServiceArea } from "../../types/serviceArea";
+import DocumentPreview from "../../molecules/DocumentPreview";
 
 type ElectricianFormMode = "register" | "admin";
 
@@ -73,7 +73,6 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
     latitude: "",
     longitude: "",
     validIdNumber: "",
-    validIdType: "aadhar_card",
     password: "",
     status: "pending",
   });
@@ -81,6 +80,8 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
   const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
 
   const [validId, setValidId] = useState<File | null>(null);
+  const [addressProof, setAddressProof] = useState<File | null>(null);
+  const [bankAccountProof, setBankAccountProof] = useState<File | null>(null);
 
   const [isLoading, setIsLoading] = useState(isAdmin);
 
@@ -127,7 +128,6 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
           latitude: data.latitude !== null ? String(data.latitude) : "",
           longitude: data.longitude !== null ? String(data.longitude) : "",
           validIdNumber: data.valid_id_number || "",
-          validIdType: data.valid_id_type || "aadhar_card",
           password: "",
           status: data.status || "pending",
         });
@@ -230,6 +230,36 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
     setValidId(file);
   };
 
+  const handleDocumentChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setFile: (file: File | null) => void,
+  ) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      setFile(null);
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      showSnackbar.error("File size must be less than 10 MB.");
+      setFile(null);
+      e.target.value = "";
+      return;
+    }
+
+    if (!allowedDocTypes.includes(file.type)) {
+      showSnackbar.error(
+        "Only PNG, JPG, JPEG, HEIC, HEIF and PDF files are allowed.",
+      );
+      setFile(null);
+      e.target.value = "";
+      return;
+    }
+
+    setFile(file);
+  };
+
   /*
    * Submit
    */
@@ -252,7 +282,6 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
           latitude: Number(formData.latitude),
           longitude: Number(formData.longitude),
           valid_id_number: formData.validIdNumber.trim(),
-          valid_id_type: formData.validIdType,
           status: formData.status,
         };
 
@@ -268,6 +297,14 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
          */
         if (validId) {
           updateData.validId = validId;
+        }
+
+        if (addressProof) {
+          updateData.addressProof = addressProof;
+        }
+
+        if (bankAccountProof) {
+          updateData.bankAccountProof = bankAccountProof;
         }
 
         await updateElectrician(id, updateData);
@@ -309,6 +346,18 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
       return;
     }
 
+    if (!addressProof) {
+      showSnackbar.error("Please upload your address proof.");
+
+      return;
+    }
+
+    if (!bankAccountProof) {
+      showSnackbar.error("Please upload your bank account proof.");
+
+      return;
+    }
+
     if (!isValidEmail(formData.email)) {
       showSnackbar.error("Please enter valid email.");
 
@@ -328,8 +377,9 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
         longitude: Number(formData.longitude),
         profilePhoto,
         validId,
+        addressProof,
+        bankAccountProof,
         validIdNumber: formData.validIdNumber.trim(),
-        validIdType: formData.validIdType,
         password: formData.password,
       };
 
@@ -447,69 +497,37 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
               <div className="grid gap-5 md:grid-cols-2">
                 {/* Profile Photo */}
                 <div className="md:col-span-2">
-                  {isAdmin && electrician?.profile_photo_url && (
-                    <div className="mb-4">
-                      <p className="mb-2 text-sm font-medium text-ink">
-                        Current Profile Photo
-                      </p>
-
-                      <div className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4">
-                        <img
-                          src={electrician.profile_photo_url}
-                          alt={electrician.name}
-                          className="h-24 w-24 rounded-xl object-cover border border-slate-200"
-                        />
-
-                        <div>
-                          <p className="text-xs text-muted">
-                            Current profile photo
-                          </p>
-
-                          <a
-                            href={electrician.profile_photo_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mt-1 inline-block text-xs font-medium text-primary hover:underline"
-                          >
-                            View Full Image
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
                   <DocumentUpload
                     label="Profile Photo"
                     file={profilePhoto}
                     onChange={handleProfilePhotoChange}
                   />
-
-                  {isAdmin && electrician?.profile_photo_url && (
-                    <a
-                      href={electrician.profile_photo_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-2 inline-block text-xs font-medium text-primary hover:underline"
-                    >
-                      View Current Profile Photo
-                    </a>
-                  )}
-
                   <p className="mt-2 text-xs text-slate-500">
                     PNG, JPG or JPEG. Maximum 5 MB.
                   </p>
+                  {isAdmin && electrician?.profile_photo_url && (
+                    <div className="mt-4">
+                      <DocumentPreview
+                        label="Profile Photo"
+                        url={electrician.profile_photo_url}
+                        openText="View Profile Photo"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Name */}
-                <AppInput
-                  label="Full Name"
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="e.g. Mahesh Joshi"
-                  required
-                />
+                <div className="md:col-span-2">
+                  <AppInput
+                    label="Full Name"
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="e.g. Mahesh Joshi"
+                    required
+                  />
+                </div>
 
                 {/* Email - NEVER EDITABLE */}
                 <AppInput
@@ -640,102 +658,84 @@ const ElectricianForm = ({ mode = "register" }: ElectricianFormProps) => {
               </div>
 
               <div className="grid gap-5 md:grid-cols-2">
-                <AppSelect
-                  label="ID Type"
-                  name="validIdType"
-                  value={formData.validIdType}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="" disabled>
-                    Select ID type
-                  </option>
-
-                  {ID_TYPES.map((idData) => (
-                    <option key={idData.value} value={idData.value}>
-                      {idData.label}
-                    </option>
-                  ))}
-                </AppSelect>
-
                 <AppInput
-                  label="ID Number"
+                  label="Aadhar ID Number"
                   type="text"
                   name="validIdNumber"
                   value={formData.validIdNumber}
                   onChange={handleChange}
-                  placeholder="Enter ID number"
+                  placeholder="Enter 12-digit Aadhaar number"
+                  inputMode="numeric"
+                  maxLength={12}
                   required
+                />
+                <DocumentUpload
+                  label="Aadhar ID Proof"
+                  required
+                  file={validId}
+                  onChange={handleValidIdChange}
+                  includePdf
                 />
               </div>
 
               <div className="mt-5">
                 {isAdmin && electrician?.valid_id_url && (
-                  <div className="mb-4">
-                    <p className="mb-2 text-sm font-medium text-ink">
-                      Current Valid ID
+                  <DocumentPreview
+                    label="Aadhar ID Proof"
+                    url={electrician.valid_id_url}
+                  />
+                )}
+
+                <div className="mt-8">
+                  <div>
+                    <h3 className="font-bold text-ink">
+                      Address & Bank Account Proofs
+                    </h3>
+
+                    <p className="text-xs text-slate-500">
+                      {isAdmin
+                        ? "Update address and bank account documents"
+                        : "Upload clear images or PDFs of your documents"}
                     </p>
-
-                    <div className="rounded-xl border border-slate-200 bg-white p-4">
-                      {electrician.valid_id_url
-                        .toLowerCase()
-                        .match(/\.(jpg|jpeg|png)(\?|$)/) ? (
-                        <img
-                          src={electrician.valid_id_url}
-                          alt="Valid ID"
-                          className="max-h-64 w-auto rounded-lg border border-slate-200 object-contain"
+                  </div>
+                  <div className="grid gap-5 md:grid-cols-2 mt-4">
+                    <div className="flex flex-col gap-5">
+                      <DocumentUpload
+                        label="Address Proof"
+                        required
+                        file={addressProof}
+                        onChange={(event) =>
+                          handleDocumentChange(event, setAddressProof)
+                        }
+                        includePdf
+                      />
+                      {isAdmin && electrician?.address_proof_url && (
+                        <DocumentPreview
+                          label="Address Proof"
+                          url={electrician.address_proof_url}
                         />
-                      ) : (
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                            <FileText className="h-5 w-5" />
-                          </div>
-
-                          <div>
-                            <p className="text-sm font-medium text-ink">
-                              Current ID Document
-                            </p>
-
-                            <a
-                              href={electrician.valid_id_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs font-medium text-primary hover:underline"
-                            >
-                              View Current Document
-                            </a>
-                          </div>
-                        </div>
                       )}
+                    </div>
 
-                      <a
-                        href={electrician.valid_id_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-3 inline-block text-xs font-medium text-primary hover:underline"
-                      >
-                        Open Document
-                      </a>
+                    <div className="flex flex-col gap-5">
+                      <DocumentUpload
+                        label="Bank Account Proof"
+                        required
+                        file={bankAccountProof}
+                        onChange={(event) =>
+                          handleDocumentChange(event, setBankAccountProof)
+                        }
+                        includePdf
+                      />
+                      {isAdmin && electrician?.bank_account_proof_url && (
+                        <DocumentPreview
+                          label="Bank Account Proof"
+                          url={electrician.bank_account_proof_url}
+                        />
+                      )}
                     </div>
                   </div>
-                )}
-                <DocumentUpload
-                  label="Valid ID"
-                  file={validId}
-                  onChange={handleValidIdChange}
-                  includePdf
-                />
-
-                {isAdmin && electrician?.valid_id_url && (
-                  <a
-                    href={electrician.valid_id_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 inline-block text-xs font-medium text-primary hover:underline"
-                  >
-                    View Current Valid ID
-                  </a>
-                )}
+                </div>
               </div>
             </div>
 

@@ -94,7 +94,7 @@ const DocumentUpload = ({
       <input
         type="file"
         accept={`image/jpeg,image/png,image/heic,image/heif${includePdf ? ",application/pdf" : ""}`}
-        required={required}
+        aria-required={required}
         onChange={onChange}
         className="hidden"
         multiple={multiple}
