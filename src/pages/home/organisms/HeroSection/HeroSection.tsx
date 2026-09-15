@@ -19,6 +19,8 @@ const HeroSection = ({ onBook }: HeroSectionProps) => {
         <img
           src={heroBg}
           alt=""
+          loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover object-center"
         />
 
@@ -251,6 +253,7 @@ const HeroSection = ({ onBook }: HeroSectionProps) => {
             width={1024}
             height={1536}
             fetchPriority="high"
+            decoding="async"
             className="
               flex-1
               md:h-full
