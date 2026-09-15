@@ -31,7 +31,7 @@ const BookingSummary = ({
       return "Project Discussion";
     }
 
-    return service || "Not selected";
+    return service || "-";
   };
 
   return (
@@ -51,13 +51,13 @@ const BookingSummary = ({
           p-5
         "
       >
-        <SummaryRow label="Customer" value={name || "Not provided"} />
+        <SummaryRow label="Customer" value={name || "-"} />
 
         <SummaryRow label="Service" value={getServiceName()} />
 
-        <SummaryRow label="Date" value={date || "Not selected"} />
+        <SummaryRow label="Date" value={date || "-"} />
 
-        <SummaryRow label="Time" value={time || "Not selected"} last />
+        <SummaryRow label="Time" value={time || "-"} last />
       </div>
     </section>
   );
