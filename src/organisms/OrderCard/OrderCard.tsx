@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { toPng } from "html-to-image";
-import { Download, Share, Share2 } from "lucide-react";
+import { Download, Share2 } from "lucide-react";
 import {
   CalendarDays,
   Clock3,
