@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { toPng } from "html-to-image";
+import { Download, Share, Share2 } from "lucide-react";
 import {
   CalendarDays,
   Clock3,
@@ -15,6 +17,9 @@ import { PrimaryButton } from "../../atoms/PrimaryButton";
 import type { Electrician } from "../../services/electricianService";
 import { getGoogleMapsUrl, getWhatsAppUrl } from "../../helpers/orderHelpers";
 import type { Order } from "../../types/order";
+import { SecondaryButton } from "../../atoms";
+import ServiceImageCard from "../../molecules/ServiceImageCard";
+import { showSnackbar } from "../../atoms/AppSnackBar";
 
 type OrderCardProps = {
   order: Order;
@@ -32,9 +37,77 @@ const OrderCard = ({
   role,
 }: OrderCardProps) => {
   const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+  const imageCardRef = useRef<HTMLDivElement>(null);
   const assignedElectrician = electricians.find(
     (electrician) => electrician.id === order.electrician_id,
   );
+
+  const handleDownloadImage = async () => {
+    if (!imageCardRef.current) return;
+
+    try {
+      const dataUrl = await toPng(imageCardRef.current, {
+        pixelRatio: 2,
+        cacheBust: true,
+        skipFonts: true,
+      });
+
+      const link = document.createElement("a");
+      link.download = `blue-eye-electric-service-card-${order.id}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (error) {
+      showSnackbar.error("Failed to generate order image. Please try again.");
+    }
+  };
+
+  const handleShareImage = async () => {
+    if (!imageCardRef.current) return;
+
+    try {
+      const dataUrl = await toPng(imageCardRef.current, {
+        pixelRatio: 2,
+        cacheBust: true,
+        skipFonts: true,
+      });
+
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
+
+      const file = new File([blob], `blue-eye-electric-order-${order.id}.png`, {
+        type: "image/png",
+      });
+
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          title: "Blue Eye Electric Service",
+          text: `Service completion receipt - Order #${order.id}`,
+          files: [file],
+        });
+
+        return;
+      }
+
+      // Fallback for browsers that don't support file sharing
+      // const link = document.createElement("a");
+      // link.download = file.name;
+      // link.href = URL.createObjectURL(blob);
+      // link.click();
+
+      // URL.revokeObjectURL(link.href);
+
+      await handleDownloadImage();
+    } catch (error) {
+      if ((error as Error).name === "AbortError") {
+        return;
+      }
+
+      console.error("Failed to share service image:", error);
+
+      // Final fallback → download
+      await handleDownloadImage();
+    }
+  };
 
   return (
     <div
@@ -108,6 +181,19 @@ const OrderCard = ({
 
         {order.status !== "completed" && role === "electrician" && (
           <PrimaryButton onClick={onMarkComplete}>Mark Complete</PrimaryButton>
+        )}
+
+        {order.status === "completed" && (
+          <div className="flex flex-row gap-2 items-center justify-end">
+            <span>Service Card</span>
+            <SecondaryButton onClick={handleDownloadImage}>
+              <Download className="h-4 w-4" />
+            </SecondaryButton>
+
+            <SecondaryButton onClick={handleShareImage}>
+              <Share2 className="h-4 w-4" />
+            </SecondaryButton>
+          </div>
         )}
       </div>
 
@@ -457,6 +543,23 @@ Blue Eye Electric`,
                 Chat with Customer
               </a>
             )}
+          </div>
+        </div>
+      )}
+
+      {order.status === "completed" && (
+        <div
+          style={{
+            position: "fixed",
+            left: "-10000px",
+            top: 0,
+          }}
+        >
+          <div ref={imageCardRef}>
+            <ServiceImageCard
+              order={order}
+              assignedElectrician={assignedElectrician}
+            />
           </div>
         </div>
       )}
