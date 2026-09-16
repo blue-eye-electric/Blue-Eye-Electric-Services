@@ -1,25 +1,38 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, MapPin, Pencil, Plus, Save, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+// Icons
+import { ArrowLeft, LogOut, Pencil, Plus, Save, X } from "lucide-react";
+
+// Components
 import { PrimaryButton, SecondaryButton } from "../../../atoms";
 import PageLoader from "../../../atoms/PageLoader";
 import { showSnackbar } from "../../../atoms/AppSnackBar";
+
+// Services
 import {
   createServiceArea,
   getServiceAreas,
   updateServiceArea,
 } from "../../../services/serviceAreaService";
+
+// Interfaces
 import type { ServiceArea } from "../../../types/serviceArea";
 
 const AdminServiceAreaPage = () => {
   const navigate = useNavigate();
+  const name = localStorage.getItem("name") || "Admin";
   const [serviceAreas, setServiceAreas] = useState<ServiceArea[]>([]);
   const [newServiceArea, setNewServiceArea] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingValue, setEditingValue] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/admin/login");
+  };
 
   const loadServiceAreas = async () => {
     try {
@@ -111,8 +124,8 @@ const AdminServiceAreaPage = () => {
 
   return (
     <div className="min-h-dvh bg-background text-primary">
-      <main className="mx-auto max-w-5xl px-5 py-8 md:py-12">
-        <div className="mb-8 flex items-center justify-between gap-4">
+      <header className="border-b border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
           <div className="flex items-center gap-3">
             <SecondaryButton
               onClick={() => navigate("/admin/dashboard")}
@@ -122,20 +135,27 @@ const AdminServiceAreaPage = () => {
             </SecondaryButton>
 
             <div>
-              <h1 className="text-2xl font-bold text-ink md:text-3xl">
-                Service Areas
-              </h1>
-              <p className="mt-1 text-sm text-muted">
-                Add and manage areas available for electrician registration.
+              <h1 className="text-lg font-bold text-ink">Service Areas</h1>
+              <p className="text-xs text-muted">
+                Manage areas available for electrician registration.
               </p>
             </div>
           </div>
 
-          <div className="hidden h-12 w-12 items-center justify-center rounded-xl bg-primary text-white sm:flex">
-            <MapPin className="h-6 w-6" />
+          <div className="flex items-center gap-4">
+            <div className="hidden text-right sm:block">
+              <p className="text-sm font-semibold text-ink">{name}</p>
+              <p className="text-xs text-muted">Admin</p>
+            </div>
+
+            <SecondaryButton onClick={handleLogout} title="Logout">
+              <LogOut className="h-4 w-4" />
+            </SecondaryButton>
           </div>
         </div>
+      </header>
 
+      <main className="mx-auto max-w-5xl px-5 py-8">
         <form
           onSubmit={handleCreate}
           className="mb-6 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row"

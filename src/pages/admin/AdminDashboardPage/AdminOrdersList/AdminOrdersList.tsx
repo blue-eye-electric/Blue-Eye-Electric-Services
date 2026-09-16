@@ -13,11 +13,12 @@ import AssignElectricianModal from "../AssignElectricianModal";
 import OrderCard from "../../../../organisms/OrderCard/OrderCard";
 import CompleteJobModal from "../../../../organisms/CompleteJobModal";
 import { showSnackbar } from "../../../../atoms/AppSnackBar";
+import { SecondaryButton } from "../../../../atoms";
+import PageLoader from "../../../../atoms/PageLoader";
 
 // Interfaces
 import type { Order } from "../../../../types/order";
 import type { Electrician } from "../../../../types/electrician";
-import { SecondaryButton } from "../../../../atoms";
 
 type AdminOrdersListProps = {
   isProjectDiscussion?: boolean;
@@ -160,7 +161,7 @@ const AdminOrdersList = ({
   };
 
   if (isLoading) {
-    return <div className="p-8 text-sm text-muted">Loading orders...</div>;
+    return <PageLoader />;
   }
 
   return (
@@ -185,11 +186,11 @@ const AdminOrdersList = ({
               </p>
             </div>
 
-            <div className="rounded-xl bg-primary/10 px-4 py-2">
+            {/* <div className="rounded-xl bg-primary/10 px-4 py-2">
               <p className="text-xs text-muted">Total Orders</p>
 
               <p className="text-xl font-bold text-primary">{orders.length}</p>
-            </div>
+            </div> */}
           </div>
         </div>
 

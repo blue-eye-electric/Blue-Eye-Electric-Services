@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   XCircle,
   ArrowLeft,
+  LogOut,
 } from "lucide-react";
 
 // Services
@@ -20,20 +21,26 @@ import {
 // Components
 import ElectricianAvatar from "./ElectricianAvatar";
 import { SecondaryButton } from "../../../atoms";
+import { showSnackbar } from "../../../atoms/AppSnackBar";
 
 // Interfaces
 import type {
   Electrician,
   ElectricianStatus,
 } from "../../../types/electrician";
-import { showSnackbar } from "../../../atoms/AppSnackBar";
 
 const AdminElectricianPage = () => {
   const navigate = useNavigate();
+  const name = localStorage.getItem("name") || "Admin";
   const [electricians, setElectricians] = useState<Electrician[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/admin/login");
+  };
 
   useEffect(() => {
     fetchElectricians();
@@ -107,42 +114,38 @@ const AdminElectricianPage = () => {
 
   return (
     <div className="min-h-dvh bg-background text-primary">
-      <main className="mx-auto max-w-5xl px-5 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex flex-row items-center gap-3">
-            <SecondaryButton onClick={() => navigate("/admin/dashboard")}>
+      <header className="border-b border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
+          <div className="flex items-center gap-3">
+            <SecondaryButton
+              onClick={() => navigate("/admin/dashboard")}
+              title="Back to dashboard"
+            >
               <ArrowLeft className="h-4 w-4" />
             </SecondaryButton>
-            <div className="flex flex-row gap-2 items-center ">
-              <div
-                className="
-                flex
-                h-16
-                w-16
-                items-center
-                justify-center
-                rounded-xl
-                bg-primary
-                text-white
-              "
-              >
-                <Wrench className="h-10 w-10" />
-              </div>
 
-              <div>
-                <h1 className="text-2xl font-bold text-ink md:text-3xl">
-                  Electricians
-                </h1>
-
-                <p className="mt-1 text-sm text-muted">
-                  Manage electrician accounts and their status.
-                </p>
-              </div>
+            <div>
+              <h1 className="text-lg font-bold text-ink">Electricians</h1>
+              <p className="text-xs text-muted">
+                Manage electrician accounts and their status.
+              </p>
             </div>
           </div>
-        </div>
 
+          <div className="flex items-center gap-4">
+            <div className="hidden text-right sm:block">
+              <p className="text-sm font-semibold text-ink">{name}</p>
+              <p className="text-xs text-muted">Admin</p>
+            </div>
+
+            <SecondaryButton onClick={handleLogout} title="Logout">
+              <LogOut className="h-4 w-4" />
+            </SecondaryButton>
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-5xl px-5 py-8">
         {/* Stats */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {/* Total */}

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 // Icons
-import { LogOut, LayoutDashboard, ArrowRight } from "lucide-react";
+import { LogOut, LayoutDashboard, Zap, MapPinned, Wrench } from "lucide-react";
 
 // Components
 import { SecondaryButton } from "../../../atoms";
@@ -73,29 +73,29 @@ const AdminDashboardPage = () => {
               Here's what's happening with your service platform today.
             </p>
           </div>
+        </div>
 
-          <div className="flex flex-col gap-3">
-            <SecondaryButton
-              icon={<ArrowRight className="w-4 h-4" />}
-              onClick={() => navigate("/admin/project")}
-            >
-              Project Orders
-            </SecondaryButton>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          <SecondaryButton
+            icon={<Zap className="w-4 h-4" />}
+            onClick={() => navigate("/admin/project")}
+          >
+            Project Discussion
+          </SecondaryButton>
 
-            <SecondaryButton
-              icon={<ArrowRight className="w-4 h-4" />}
-              onClick={() => navigate("/admin/electricians")}
-            >
-              See Electricians
-            </SecondaryButton>
+          <SecondaryButton
+            icon={<Wrench className="w-4 h-4" />}
+            onClick={() => navigate("/admin/electricians")}
+          >
+            Electricians
+          </SecondaryButton>
 
-            <SecondaryButton
-              icon={<ArrowRight className="w-4 h-4" />}
-              onClick={() => navigate("/admin/serviceArea")}
-            >
-              Manage Service Areas
-            </SecondaryButton>
-          </div>
+          <SecondaryButton
+            icon={<MapPinned className="w-4 h-4" />}
+            onClick={() => navigate("/admin/serviceArea")}
+          >
+            Manage Service Areas
+          </SecondaryButton>
         </div>
 
         {/* Content */}
