@@ -1,7 +1,14 @@
 import { useNavigate } from "react-router-dom";
 
 // Icons
-import { LogOut, LayoutDashboard, Zap, MapPinned, Wrench } from "lucide-react";
+import {
+  Gift,
+  LogOut,
+  LayoutDashboard,
+  Zap,
+  MapPinned,
+  Wrench,
+} from "lucide-react";
 
 // Components
 import { SecondaryButton } from "../../../atoms";
@@ -75,19 +82,19 @@ const AdminDashboardPage = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <SecondaryButton
             icon={<Zap className="w-4 h-4" />}
             onClick={() => navigate("/admin/project")}
           >
-            Project Discussion
+            Project Discussion Orders
           </SecondaryButton>
 
           <SecondaryButton
             icon={<Wrench className="w-4 h-4" />}
             onClick={() => navigate("/admin/electricians")}
           >
-            Electricians
+            Manage Electricians
           </SecondaryButton>
 
           <SecondaryButton
@@ -95,6 +102,13 @@ const AdminDashboardPage = () => {
             onClick={() => navigate("/admin/serviceArea")}
           >
             Manage Service Areas
+          </SecondaryButton>
+
+          <SecondaryButton
+            icon={<Gift className="w-4 h-4" />}
+            onClick={() => navigate("/admin/referrals")}
+          >
+            Referral Partners
           </SecondaryButton>
         </div>
 

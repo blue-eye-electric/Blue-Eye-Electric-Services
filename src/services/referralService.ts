@@ -1,19 +1,6 @@
 import { baseUrl } from "../constants/apiConstants";
+import type { CreateReferralPayload, CreateReferralResponse, GetReferralsParams, GetReferralsResponse, Referral, UpdateReferralPayload, UpdateReferralResponse } from "../types/referral";
 
-export type CreateReferralPayload = {
-  name: string;
-  phone: string;
-};
-
-export type CreateReferralResponse = {
-  success: boolean;
-  message?: string;
-  referral?: {
-    name: string;
-    phone: string;
-    referralCode: string;
-  };
-};
 
 export const createReferral = async (
   payload: CreateReferralPayload,
@@ -33,4 +20,66 @@ export const createReferral = async (
   }
 
   return result;
+};
+export const getReferrals = async (
+  params?: GetReferralsParams,
+): Promise<GetReferralsResponse> => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Authentication token not found");
+  }
+
+  // Construct query parameters
+  const queryParams = new URLSearchParams();
+  if (params?.page) queryParams.append("page", params.page.toString());
+  if (params?.limit) queryParams.append("limit", params.limit.toString());
+  if (params?.search) queryParams.append("search", params.search);
+
+  const queryString = queryParams.toString();
+  const url = `${baseUrl}/api/referrals${queryString ? `?${queryString}` : ""}`;
+
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = (await response.json()) as GetReferralsResponse;
+
+  if (!response.ok || !result.success) {
+    throw new Error(result.message || "Failed to load referrals");
+  }
+
+  return result;
+};
+
+export const updateReferral = async (
+  phone: string,
+  payload: UpdateReferralPayload
+): Promise<Referral> => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Authentication token not found");
+  }
+
+  const response = await fetch(`${baseUrl}/api/referrals/${phone}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const result = (await response.json()) as UpdateReferralResponse;
+
+  if (!response.ok) {
+    throw new Error(result.message || "Failed to update referral");
+  }
+
+  // Return the updated referral object or fallback data if not wrapped
+  return result.referral || (result as unknown as Referral);
 };

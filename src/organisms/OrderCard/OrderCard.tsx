@@ -357,13 +357,18 @@ const OrderCard = ({
               </div>
               <div className="grid grid-cols-[1fr_auto] border-t border-slate-100 px-4 py-3 text-sm text-ink">
                 <span>Commission</span>
-                <span>{order?.referral?.commission}%</span>
+                <span>{order?.referral?.commission} %</span>
               </div>
-              {order.total_amount && order.total_amount != 0 && (
+
+              {order.status === "completed" && order.total_amount && (
                 <div className="grid grid-cols-[1fr_auto] border-t border-slate-100 px-4 py-3 text-sm text-ink">
                   <span>Commission Amount</span>
                   <span>
-                    ₹{(order?.referral?.commission / 100) * order.total_amount}
+                    ₹{" "}
+                    {(
+                      (order?.referral?.commission / 100) *
+                      order.total_amount
+                    ).toFixed(2)}
                   </span>
                 </div>
               )}
