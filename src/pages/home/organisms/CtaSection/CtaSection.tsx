@@ -23,7 +23,6 @@ const CTASection = ({ onBook }: CtaSectionProps) => {
     loadServiceAreas();
   }, []);
 
-  console.log(serviceAreas);
   return (
     <section className="bg-primary/70 px-[6vw] py-20 md:py-24">
       <div className="mx-auto max-w-5xl">

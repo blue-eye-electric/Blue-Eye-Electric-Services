@@ -24,6 +24,7 @@ const ElectricianSection = lazy(
   () => import("./organisms/ElectricianSection/ElectricianSection"),
 );
 const CtaSection = lazy(() => import("./organisms/CtaSection"));
+const ReferralSection = lazy(() => import("./organisms/ReferralSection"));
 
 type DeferredSectionProps = {
   children: ReactNode;
@@ -115,6 +116,10 @@ export default function HomePage() {
         </DeferredSection>
         <DeferredSection>
           <ElectricianSection />
+        </DeferredSection>
+
+        <DeferredSection>
+          <ReferralSection />
         </DeferredSection>
 
         <DeferredSection>
