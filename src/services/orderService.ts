@@ -74,10 +74,6 @@ export const getOrders = async (
 
   if (params?.isProjectDiscussion !== undefined) {
     searchParams.append("isProjectDiscussion", String(params.isProjectDiscussion));
-    searchParams.append(
-      "is_project_discussion",
-      String(params.isProjectDiscussion),
-    );
   }
 
   if (params?.page !== undefined) {

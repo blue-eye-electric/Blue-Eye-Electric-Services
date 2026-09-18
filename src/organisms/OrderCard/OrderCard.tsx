@@ -37,6 +37,7 @@ const OrderCard = ({
   role,
 }: OrderCardProps) => {
   const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+  const [showRefferalDetail, setShowRefferalDetail] = useState(false);
   const imageCardRef = useRef<HTMLDivElement>(null);
   const assignedElectrician = electricians.find(
     (electrician) => electrician.id === order.electrician_id,
@@ -163,6 +164,14 @@ const OrderCard = ({
               minute: "2-digit",
             })}
           </p>
+          {order.service_area && (
+            <p className="mt-2 text-sm text-muted">
+              Service area:{" "}
+              <span className="font-bold text-md text-ink">
+                {order.service_area}
+              </span>
+            </p>
+          )}
         </div>
 
         {order.status !== "completed" &&
@@ -229,12 +238,6 @@ const OrderCard = ({
               </p>
             </div>
           </div>
-          {order.service_area && (
-            <p className="mt-2 text-sm text-muted">
-              Service area:{" "}
-              <span className="font-medium text-ink">{order.service_area}</span>
-            </p>
-          )}
         </div>
 
         {/* Service */}
@@ -324,14 +327,59 @@ const OrderCard = ({
         </div>
       )}
 
+      {order?.referral?.name && (
+        <button
+          type="button"
+          onClick={() => setShowRefferalDetail((isVisible) => !isVisible)}
+          className="flex flex-col w-full justify-between items-center text-left text-ink"
+        >
+          <div className="flex w-full mt-5 items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted">
+              Reffered By
+            </span>
+            <span className="flex items-center gap-2 text-lg font-bold">
+              {order?.referral?.name}
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${showRefferalDetail ? "rotate-180" : ""}`}
+              />
+            </span>
+          </div>
+
+          {showRefferalDetail && (
+            <div className="w-full bg-primary/10 rounded-2xl p-2 mt-2">
+              <div className="grid grid-cols-[1fr_auto] px-4 py-3 text-sm text-ink">
+                <span>Name</span>
+                <span>{order?.referral?.name}</span>
+              </div>
+              <div className="grid grid-cols-[1fr_auto] border-t border-slate-100 px-4 py-3 text-sm text-ink">
+                <span>Phone</span>
+                <span>{order?.referral?.phone}</span>
+              </div>
+              <div className="grid grid-cols-[1fr_auto] border-t border-slate-100 px-4 py-3 text-sm text-ink">
+                <span>Commission</span>
+                <span>{order?.referral?.commission}%</span>
+              </div>
+              {order.total_amount && order.total_amount != 0 && (
+                <div className="grid grid-cols-[1fr_auto] border-t border-slate-100 px-4 py-3 text-sm text-ink">
+                  <span>Commission Amount</span>
+                  <span>
+                    ₹{(order?.referral?.commission / 100) * order.total_amount}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+        </button>
+      )}
+
       {role === "admin" &&
         order.status === "completed" &&
         typeof order.total_amount === "number" && (
           <div className="mt-5 border-t border-slate-100 pt-5">
-            <div className="flex flex-row justify-center items-center">
+            <div className="flex flex-row items-center">
               <p className="text-sm text-ink">
                 Payment Mode :{" "}
-                <span className="font-bold">
+                <span className="font-bold text-base">
                   {order.mode_of_payment === "UPI" ? "UPI" : "Cash"}
                 </span>
               </p>

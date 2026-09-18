@@ -45,9 +45,17 @@ export default function AssignElectricianModal({
     Record<string, [number, number | null]>
   >({});
   const [error, setError] = useState("");
+  const [electriciansInOrderArea, setElectriciansInOrderArea] = useState<
+    Electrician[]
+  >([]);
 
   useEffect(() => {
     fetchElectriciansDistance();
+    const areaFilteredElectricians = electricians.filter(
+      (electrician) => electrician.service_area === order.service_area,
+    );
+
+    setElectriciansInOrderArea(areaFilteredElectricians);
   }, [order.id]);
 
   const fetchElectriciansDistance = async () => {
@@ -82,7 +90,7 @@ export default function AssignElectricianModal({
   }
 
   const sortedElectricians = useMemo(() => {
-    return [...electricians].sort((a, b) => {
+    return [...electriciansInOrderArea].sort((a, b) => {
       const distanceA = electricianTravelMap[a.id]?.[0];
       const distanceB = electricianTravelMap[b.id]?.[0];
 
@@ -92,7 +100,7 @@ export default function AssignElectricianModal({
 
       return distanceA - distanceB;
     });
-  }, [electricians, electricianTravelMap]);
+  }, [electriciansInOrderArea, electricianTravelMap]);
 
   const handleAssign = async () => {
     if (!selectedId) {
@@ -266,20 +274,18 @@ export default function AssignElectricianModal({
                             {electrician.current_address}
                           </p>
 
-                          <div className="mt-1 flex flex-row gap-1 justify-between">
-                            {distance && (
-                              <p className="mt-1 flex items-center gap-1 text-xs text-muted">
-                                <Route className="h-3 w-3" />
-                                Distance : {distance} Kms
-                              </p>
-                            )}
-                            {duration && (
-                              <p className="mt-1 flex items-center gap-1 text-xs text-muted">
-                                <Clock className="h-3 w-3" />
-                                Duration : {duration} min
-                              </p>
-                            )}
-                          </div>
+                          {distance && (
+                            <p className="mt-1 flex items-center gap-1 text-xs text-muted">
+                              <Route className="h-3 w-3" />
+                              Distance : {distance} Kms
+                            </p>
+                          )}
+                          {duration && (
+                            <p className="mt-1 flex items-center gap-1 text-xs text-muted">
+                              <Clock className="h-3 w-3" />
+                              Duration : {duration} min
+                            </p>
+                          )}
                         </div>
 
                         {selected && (

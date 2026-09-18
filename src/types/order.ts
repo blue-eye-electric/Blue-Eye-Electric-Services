@@ -4,6 +4,12 @@ export interface CreateOrderResponse {
   orderId: string;
 }
 
+export interface Refferal{
+  name: string,
+  phone: string,
+  commission: number,
+}
+
 export interface Order {
   id: string;
   electrician_id: string | null;
@@ -24,6 +30,7 @@ export interface Order {
   mode_of_payment: "cash" | "UPI" | null;
   payment_details: PaymentDetail[];
   total_amount: number | null;
+  referral: Refferal
 }
 
 export interface PaymentDetail {
