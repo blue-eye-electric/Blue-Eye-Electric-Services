@@ -1,9 +1,10 @@
 import { useState, type FormEvent } from "react";
-import { Check, Clipboard, Gift, X } from "lucide-react";
+import { Gift, X } from "lucide-react";
 
 import { AppInput } from "../../../../atoms/AppInput";
 import { PrimaryButton } from "../../../../atoms/PrimaryButton";
 import { createReferral } from "../../../../services/referralService";
+import ReferralCodeCard from "./ReferralCodeCard";
 
 const ReferralSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,14 +12,12 @@ const ReferralSection = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [referralCode, setReferralCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState("");
 
   const openModal = () => {
     setName("");
     setMobileNumber("");
     setReferralCode("");
-    setIsCopied(false);
     setError("");
     setIsModalOpen(true);
   };
@@ -53,12 +52,6 @@ const ReferralSection = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const copyReferralCode = async () => {
-    await navigator.clipboard.writeText(referralCode);
-    setIsCopied(true);
-    window.setTimeout(() => setIsCopied(false), 2000);
   };
 
   return (
@@ -123,26 +116,7 @@ const ReferralSection = () => {
             </p>
 
             {referralCode ? (
-              <div className="mt-8 rounded-xl border border-primary/20 bg-primary/5 p-5 text-center">
-                <p className="text-sm font-semibold text-muted">
-                  Your referral code
-                </p>
-                <p className="mt-2 break-all text-3xl font-bold tracking-[2px] text-primary">
-                  {referralCode}
-                </p>
-                <button
-                  type="button"
-                  onClick={copyReferralCode}
-                  className="mt-5 inline-flex items-center gap-2 rounded-full border border-primary px-5 py-2.5 text-sm font-bold text-primary transition hover:bg-primary hover:text-white"
-                >
-                  {isCopied ? (
-                    <Check className="h-4 w-4" />
-                  ) : (
-                    <Clipboard className="h-4 w-4" />
-                  )}
-                  {isCopied ? "Copied" : "Copy code"}
-                </button>
-              </div>
+              <ReferralCodeCard referralCode={referralCode} />
             ) : (
               <form onSubmit={handleSubmit} className="mt-7 space-y-5">
                 <AppInput
