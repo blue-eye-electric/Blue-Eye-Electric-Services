@@ -37,8 +37,10 @@ import { serviceOptions, timeOptions } from "../../constants/services";
 import { createOrder } from "../../services/orderService";
 import { getServiceAreas } from "../../services/serviceAreaService";
 
+// Components
 import BookingSuccess from "./BookingSuccess";
 import BookingSummary from "./BookingSummary";
+import { showSnackbar } from "../../atoms/AppSnackBar";
 
 type BookingModalProps = {
   isOpen: boolean;
@@ -154,6 +156,10 @@ const BookingModal = ({
       const payload = {
         customerName: form.name.trim(),
         customerPhone: form.phone.replace(/\D/g, "").slice(0, 10),
+        referralCode: form.referralCode
+          .replace(/[^a-zA-Z0-9]/g, "")
+          .toUpperCase()
+          .slice(0, 6),
         // Manually entered address
         customerAddress: form.address.trim(),
         // Map coordinates
@@ -176,11 +182,12 @@ const BookingModal = ({
 
       setBookingId(result.orderId);
     } catch (error) {
-      setError(
+      const err =
         error instanceof Error
           ? error.message
-          : "We couldn't confirm the booking. Please try again.",
-      );
+          : "We couldn't confirm the booking. Please try again.";
+      setError(err);
+      showSnackbar.error(err);
     } finally {
       setSubmitting(false);
     }
@@ -642,6 +649,27 @@ const BookingModal = ({
                       </div>
                     </section>
 
+                    <AppInput
+                      label="Referral Code (Optional)"
+                      value={form.referralCode}
+                      onChange={(event) =>
+                        updateForm(
+                          "referralCode",
+                          event.target.value
+                            .replace(/[^a-zA-Z0-9]/g, "")
+                            .toUpperCase()
+                            .slice(0, 6),
+                        )
+                      }
+                      placeholder="6-character code"
+                      maxLength={6}
+                      minLength={6}
+                      pattern="[A-Za-z0-9]{6}"
+                      title="Enter a 6-character referral code using letters and numbers only"
+                      autoComplete="off"
+                      className="md:col-span-2"
+                    />
+
                     {/* ================= SUMMARY ================= */}
                     <BookingSummary
                       name={form.name}
@@ -658,13 +686,13 @@ const BookingModal = ({
                         className="
                             rounded-xl
                             border
-                            border-orange/20
-                            bg-orange/5
+                            border-error/20
+                            bg-error/5
                             px-4
                             py-3
                           "
                       >
-                        <p className="text-xs font-medium text-orange">
+                        <p className="text-xs font-medium text-error">
                           {error}
                         </p>
                       </div>

@@ -15,6 +15,7 @@ export function PrimaryButton({
 }: PrimaryButtonProps) {
   return (
     <button
+      type="button"
       {...props}
       className={`
         inline-flex

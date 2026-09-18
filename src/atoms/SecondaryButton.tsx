@@ -53,7 +53,7 @@ export function SecondaryButton({
   const buttonProps = props as ButtonHTMLAttributes<HTMLButtonElement>;
 
   return (
-    <button {...buttonProps} className={classNames}>
+    <button type="button" {...buttonProps} className={classNames}>
       {icon && <span aria-hidden="true">{icon}</span>}
       {children}
     </button>

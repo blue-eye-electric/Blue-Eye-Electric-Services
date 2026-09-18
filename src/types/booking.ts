@@ -4,6 +4,7 @@ export type BookingMode = "projectDiscussion" | "electrician";
 export type BookingForm = {
   name: string;
   phone: string;
+  referralCode: string;
   address: string;
   serviceArea: string;
   mapAddress: string;
@@ -19,6 +20,7 @@ export type BookingForm = {
 export type BookingPayload = {
   customerName: string;
   customerPhone: string;
+  referralCode?: string;
   customerAddress: string;
   serviceArea: string;
   latitude: string;
@@ -40,6 +42,7 @@ export type BookingResult = {
 export const initialBookingForm: BookingForm = {
   name: "",
   phone: "",
+  referralCode: "",
   address: "",
   serviceArea: "",
   mapAddress: "",

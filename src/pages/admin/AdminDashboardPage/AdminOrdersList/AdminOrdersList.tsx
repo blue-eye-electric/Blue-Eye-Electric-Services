@@ -195,8 +195,8 @@ const AdminOrdersList = ({
         </div>
 
         {error && (
-          <div className="mb-5 rounded-xl border border-orange/20 bg-orange/5 px-4 py-3">
-            <p className="text-sm text-orange">{error}</p>
+          <div className="mb-5 rounded-xl border border-error/20 bg-error/5 px-4 py-3">
+            <p className="text-sm text-error">{error}</p>
           </div>
         )}
 

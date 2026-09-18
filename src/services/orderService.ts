@@ -14,6 +14,9 @@ export const createOrder = async (
 
   formData.append("customerName", data.customerName);
   formData.append("customerPhone", data.customerPhone);
+  if (data.referralCode) {
+    formData.append("referralCode", data.referralCode);
+  }
   formData.append("customerAddress", data.customerAddress);
   formData.append("serviceArea", data.serviceArea);
   formData.append("latitude", data.latitude);
