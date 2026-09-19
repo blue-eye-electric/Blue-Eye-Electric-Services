@@ -4,4 +4,4 @@ Disallow: /admin/
 Disallow: /electrician/login
 Disallow: /electrician/dashboard
 
-Sitemap: https://blueeyeelectric.com/sitemap.xml
+Sitemap: https://www.blueeyeelectric.com/sitemap.xml
