@@ -333,9 +333,12 @@ const AdminReferralPage = () => {
                           {/* Created Field */}
                           <td className="px-5 py-4 text-muted">
                             {referral.createdAt
-                              ? new Date(
-                                  referral.createdAt,
-                                ).toLocaleDateString()
+                              ? new Date(referral.createdAt).toLocaleDateString(
+                                  "en-IN",
+                                  {
+                                    timeZone: "Asia/Kolkata",
+                                  },
+                                )
                               : "-"}
                           </td>
 

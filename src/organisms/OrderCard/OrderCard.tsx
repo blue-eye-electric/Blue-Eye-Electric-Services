@@ -153,15 +153,14 @@ const OrderCard = ({
 
             <StatusBadge status={order.status} />
           </div>
-
+          <>{console.log(order.id, order.created_at)}</>
           <p className="mt-2 text-sm text-muted">
             Received :{" "}
-            {new Date(order.created_at).toLocaleString([], {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
+            {new Date(`${order.created_at}Z`).toLocaleString("en-IN", {
               hour: "2-digit",
               minute: "2-digit",
+              hour12: true,
+              timeZone: "Asia/Kolkata",
             })}
           </p>
           {order.service_area && (

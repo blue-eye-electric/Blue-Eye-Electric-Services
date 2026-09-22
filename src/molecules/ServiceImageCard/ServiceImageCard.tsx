@@ -43,9 +43,11 @@ const ServiceImageCard = ({
           </div>
 
           <div className="mt-1.5 text-xl whitespace-nowrap">
-            {new Date(order.created_at).toLocaleString("en-IN", {
-              dateStyle: "short",
-              timeStyle: "short",
+            {new Date(`${order.created_at}Z`).toLocaleString("en-IN", {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+              timeZone: "Asia/Kolkata",
             })}
           </div>
         </div>
