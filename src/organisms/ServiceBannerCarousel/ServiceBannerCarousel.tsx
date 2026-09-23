@@ -22,8 +22,6 @@ const ServiceBannerCarousel = ({
 }: ServiceBannerCarouselProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  if (!items.length) return null;
-
   const goTo = (index: number) => {
     setActiveIndex((index + items.length) % items.length);
   };
@@ -46,6 +44,8 @@ const ServiceBannerCarousel = ({
 
     return () => clearInterval(interval);
   }, [items.length, autoPlayInterval]);
+
+  if (!items.length) return null;
 
   return (
     <div className="w-full overflow-hidden">
@@ -131,7 +131,7 @@ const BannerCard = ({
 
   return (
     <div
-      onClick={onClick}
+      onClick={() => onClick()}
       className="
         flex min-h-[170px] items-center gap-5
         rounded-2xl

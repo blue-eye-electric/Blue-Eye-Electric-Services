@@ -1,4 +1,4 @@
-import { ArrowRight, Check, Clock3, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, Clock3, ShieldCheck, Users } from "lucide-react";
 
 import { PrimaryButton } from "../../../../atoms/PrimaryButton";
 import { AccentText } from "../../../../atoms/Typography";
@@ -205,37 +205,6 @@ const HeroSection = ({ onBook }: HeroSectionProps) => {
               Book a Service
             </PrimaryButton>
           </div>
-
-          {/* Trust */}
-          <div
-            className="
-              mt-4
-              hidden md:flex
-              items-center
-              gap-2
-              text-sm
-              font-semibold
-              text-success
-              max-md:mt-3
-              max-md:text-sm
-            "
-          >
-            <span
-              className="
-                flex
-                h-5
-                w-5
-                items-center
-                justify-center
-                rounded-full
-                max-md:h-4
-                max-md:w-4
-              "
-            >
-              <Check className="h-3.5 w-3.5 max-md:h-3 max-md:w-3" />
-            </span>
-            Trusted by 500+ Happy Customers
-          </div>
         </div>
 
         {/* RIGHT ELECTRICIAN IMAGE */}
@@ -277,36 +246,6 @@ const HeroSection = ({ onBook }: HeroSectionProps) => {
         >
           Book a Service
         </PrimaryButton>
-      </div>
-      {/* Trust */}
-      <div
-        className="
-              flex
-              md:hidden
-              items-center
-              gap-2
-              text-sm
-              font-semibold
-              text-success
-              max-md:mt-3
-              max-md:text-sm
-              z-[10]
-              pb-10
-            "
-      >
-        <span
-          className="
-                flex
-                h-5
-                w-5
-                items-center
-                justify-center
-                rounded-full
-              "
-        >
-          <Check className="h-3.5 w-3.5 " />
-        </span>
-        Trusted by 500+ Happy Customers
       </div>
     </section>
   );
